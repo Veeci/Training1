@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.training1.screen.HomeScreen
-import com.example.training1.screen.RecipeScreen
+import androidx.navigation.compose.rememberNavController
+import com.example.training1.navigation.RecipeApp
 import com.example.training1.ui.theme.Training1Theme
 
 class MainActivity : ComponentActivity() {
@@ -17,12 +17,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val navController = rememberNavController()
+
             Training1Theme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ){
-                    HomeScreen()
+                    RecipeApp(navController = navController )
                 }
             }
         }
