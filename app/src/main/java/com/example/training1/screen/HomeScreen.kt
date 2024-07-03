@@ -1,15 +1,13 @@
 package com.example.training1.screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -21,89 +19,124 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.example.training1.R
 import com.example.training1.model.Category
+import com.example.training1.model.FeaturedMeal
 import com.example.training1.model.MainViewModel
 
-@Preview(showBackground = true)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    navigateToCategory: () -> Unit
+) {
     val receiptViewModel: MainViewModel = viewModel()
     val viewstate by receiptViewModel.categoriesState
+    val viewstate2 by receiptViewModel.featuredMealsState
 
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Top
-        ) {
-            // Header banner
-            Image(
-                painter = rememberImagePainter(R.drawable.banner),
-                contentDescription = null,
+    val primaryColor = colorResource(id = R.color.mainTheme)
+
+    Scaffold(
+        content = { paddingValues->
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .padding(top = 16.dp),
-                contentScale = ContentScale.Crop
-            )
-
-            // Search bar
-            TextField(
-                value = "",
-                onValueChange = { /*TODO*/ },
-                placeholder = { Text("Search") },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Filled.Search, contentDescription = "")
-                },
-                shape = TextFieldDefaults.shape,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            )
-
-            // Categories heading
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ){
-                Text(
-                    text = "Categories",
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(top = 10.dp)
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.Top
+            ) {
+                // Header banner
+                Image(
+                    painter = rememberAsyncImagePainter(R.drawable.banner),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .padding(top = 16.dp),
+                    contentScale = ContentScale.Crop
                 )
 
-                Text(
-                    text = "View All",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = Color.Magenta,
-                    modifier = Modifier.padding(top = 10.dp)
+                // Search bar
+                TextField(
+                    value = "",
+                    onValueChange = { /*TODO*/ },
+                    placeholder = { Text("Search") },
+                    leadingIcon = {
+                        Icon(imageVector = Icons.Filled.Search, contentDescription = "")
+                    },
+                    shape = TextFieldDefaults.shape,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                        .background(Color.White)
                 )
+
+                // Categories heading
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ){
+                    Text(
+                        text = "Categories",
+                        style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.padding(top = 10.dp)
+                    )
+
+                    val color = Color(0xFFFF5E00)
+                    Text(
+                        text = "View All",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = color,
+                        modifier = Modifier
+                            .padding(top = 10.dp)
+                            .clickable {
+                                navigateToCategory()
+                            }
+                    )
+                }
+
+                CategoryScrollview(categories = viewstate.list)
+
+                // Popular deals heading
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ){
+                    Text(
+                        text = "Popular Deals",
+                        style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.padding(top = 10.dp)
+                    )
+
+                    Text(
+                        text = "View All",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = primaryColor,
+                        modifier = Modifier.padding(top = 10.dp)
+                    )
+                }
+
+                FeaturedMealScrollview(featuredMeals = viewstate2.list)
+
             }
-
-            CategoryScrollview(categories = viewstate.list)
+        },
+        bottomBar = {
         }
-    }
+    )
 }
 
 //Display the whole category list
 @Composable
 fun CategoryScrollview(categories: List<Category>)
 {
-    LazyRow() {
+    LazyRow {
         items(categories.size) { index ->
             ScrollviewCategoryItem(category = categories[index])
         }
@@ -123,14 +156,172 @@ fun ScrollviewCategoryItem(category: Category)
             painter = rememberAsyncImagePainter(category.strCategoryThumb),
             contentDescription = "Category Image",
             modifier = Modifier
-                .aspectRatio(1f)
+                .size(120.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop
         )
 
         Text(
-            text = category.strCategory,
+            text = category.strCategory?: "Unknown category",
             color = Color.Black,
             style = TextStyle(fontWeight = FontWeight.Bold),
-            modifier = Modifier.padding(4.dp)
+            fontSize = 12.sp
         )
+    }
+}
+
+//Display featured meals list
+@Composable
+fun FeaturedMealScrollview(featuredMeals: List<FeaturedMeal>)
+{
+    LazyRow {
+        items(featuredMeals.size){
+            index ->
+            ScrollViewFeaturedMealItem(featuredMeal = featuredMeals[index])
+        }
+    }
+}
+
+//Display a single featured meal
+@Composable
+fun ScrollViewFeaturedMealItem(featuredMeal: FeaturedMeal)
+{
+    val mealNameColor = colorResource(id = R.color.featuredMealName)
+
+    Column(modifier = Modifier
+        .width(150.dp)
+        .padding(8.dp)
+        .clip(RoundedCornerShape(8.dp))
+    ){
+        Image(
+            painter = rememberAsyncImagePainter(featuredMeal.strMealThumb),
+            contentDescription = null,
+            modifier = Modifier
+                .size(150.dp)
+                .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)),
+            contentScale = ContentScale.Crop
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = featuredMeal.strMeal,
+                color = mealNameColor,
+                fontSize = 14.sp,
+                modifier = Modifier
+                   .weight(1f)
+            )
+
+            Image(
+                painterResource(id = R.drawable.ic_add_btn),
+                contentDescription = "Add",
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable {
+
+                    }
+            )
+        }
+    }
+}
+
+@Composable
+fun MenuBar()
+{
+    val textColor = colorResource(id = R.color.featuredMealName)
+
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween) {
+
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Image(
+                painterResource(id = R.drawable.ic_home_btn),
+                contentDescription = "",
+                modifier = Modifier.clickable {
+
+                }
+            )
+
+            Text(
+                text = "Home",
+                fontSize = 10.sp,
+                color = textColor
+            )
+
+        }
+
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Image(
+                painterResource(id = R.drawable.ic_search_btn),
+                contentDescription = "",
+                modifier = Modifier.clickable {
+
+                }
+            )
+
+            Text(
+                text = "Explore",
+                fontSize = 10.sp,
+                color = textColor
+            )
+
+        }
+
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Image(
+                painterResource(id = R.drawable.ic_cart_btn),
+                contentDescription = "",
+                modifier = Modifier.clickable {
+
+                }
+            )
+
+            Text(
+                text = "Cart",
+                fontSize = 10.sp,
+                color = textColor
+            )
+
+        }
+
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Image(
+                painterResource(id = R.drawable.ic_fav_btn),
+                contentDescription = "",
+                modifier = Modifier.clickable {
+
+                }
+            )
+
+            Text(
+                text = "Favourite",
+                fontSize = 10.sp,
+                color = textColor
+            )
+
+        }
+
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Image(
+                painterResource(id = R.drawable.ic_user_btn),
+                contentDescription = "",
+                modifier = Modifier.clickable {
+
+                }
+            )
+
+            Text(
+                text = "Account",
+                fontSize = 10.sp,
+                color = textColor
+            )
+
+        }
     }
 }

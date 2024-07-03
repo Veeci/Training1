@@ -7,4 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="featuredMealName">#6D3805</color>
+    <color name="mainTheme">#FF5E00</color>
+    <color name="price">#929292</color>
 </resources>
