@@ -72,8 +72,6 @@ fun CategoryScreen(viewstate:MainViewModel.RecipeState)
 
                 CategoryScreen(categories = viewstate.list)
             }
-        },
-        bottomBar = {
         }
     )
 }

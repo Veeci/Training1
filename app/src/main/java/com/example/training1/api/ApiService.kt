@@ -18,4 +18,7 @@ interface ApiService {
 
     @GET("filter.php")
     suspend fun getFeaturedMeals(@Query("c") category: String): FeatureMealResponse
+
+    @GET("lookup.php")
+    suspend fun getFeaturedMealById(@Query("i") id: String): FeatureMealResponse
 }
