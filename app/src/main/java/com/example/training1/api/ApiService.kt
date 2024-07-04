@@ -25,5 +25,5 @@ interface ApiService {
     suspend fun getMealsByName(@Query("f") area: String): MealResponse
 
     @GET("lookup.php")
-    suspend fun getMealDetail(@Query("i") area: String): MealDetailResponse
+    suspend fun getMealDetail(@Query("i") idMeal: String): MealDetailResponse
 }

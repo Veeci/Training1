@@ -14,23 +14,19 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.training1.R
 import com.example.training1.model.MainViewModel
 
 @Composable
-fun MealDetailScreen(viewstate: MainViewModel.MealDetailState)
-{
+fun MealDetailScreen(viewstate: MainViewModel.MealDetailState) {
     Scaffold(
-        content = { paddingValues ->  
+        content = { paddingValues ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -38,54 +34,26 @@ fun MealDetailScreen(viewstate: MainViewModel.MealDetailState)
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState()),
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                )
-                {
-                    Image(
-                        painter = rememberAsyncImagePainter(R.drawable.detail_background),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .width(210.dp)
-                            .height(200.dp),
-
-                        )
-                }
-
-//                Row(
-//                    modifier = Modifier
-//                        .fillMaxSize(),
-//                    horizontalArrangement = Arrangement.Center
-//                ) {
-//                    Text(
-//                        text = "This funtion is under maintenance :(",
-//                        fontSize = 30.sp
-//                    )
-//                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 15.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Image(
-                        painter = rememberAsyncImagePainter(viewstate.meal.strMealThumb),
-                        contentDescription = null
+                if (viewstate.loading) {
+                    Text(
+                        text = "Loading meal detail...",
                     )
-                }
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 10.dp),
-                )
-                {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
+                } else if (viewstate.error != null) {
+                    Text(text = viewstate.error)
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 10.dp),
                     ) {
+                        Image(
+                            painter = rememberAsyncImagePainter(viewstate.meal.strMealThumb),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                        )
+
                         Text(
                             text = viewstate.meal.strMeal,
                             color = colorResource(id = R.color.featuredMealName),
@@ -105,22 +73,18 @@ fun MealDetailScreen(viewstate: MainViewModel.MealDetailState)
                                 .padding(top = 10.dp),
                             textAlign = TextAlign.End
                         )
+
+                        Text(
+                            text = viewstate.meal.strCategory,
+                            color = colorResource(id = R.color.featuredMealName),
+                            fontSize = 16.sp,
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            textAlign = TextAlign.Start
+                        )
                     }
-
-                    Text(
-                        text = viewstate.meal.strCategory,
-                        color = colorResource(id = R.color.featuredMealName),
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.Start
-                    )
                 }
-
             }
-        },
-        bottomBar = {
-
         }
     )
 }

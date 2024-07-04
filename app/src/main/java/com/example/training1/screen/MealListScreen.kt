@@ -42,7 +42,7 @@ import com.example.training1.model.Meal
 @Composable
 fun MealListScreen(viewstate: MainViewModel.MealListState, navigateToMealDetail: (String) -> Unit) {
     Scaffold(
-        content = { paddingValues ->  
+        content = { paddingValues ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -50,7 +50,6 @@ fun MealListScreen(viewstate: MainViewModel.MealListState, navigateToMealDetail:
                     .padding(16.dp),
                 verticalArrangement = Arrangement.Top
             ) {
-                // Header banner
                 Image(
                     painter = rememberAsyncImagePainter(R.drawable.banner),
                     contentDescription = null,
@@ -61,7 +60,6 @@ fun MealListScreen(viewstate: MainViewModel.MealListState, navigateToMealDetail:
                     contentScale = ContentScale.Crop
                 )
 
-                // Search bar
                 TextField(
                     value = "",
                     onValueChange = { /*TODO*/ },
@@ -76,30 +74,34 @@ fun MealListScreen(viewstate: MainViewModel.MealListState, navigateToMealDetail:
                         .background(Color.White)
                 )
 
-                MealList(meals = viewstate.list, onMealClicked = { mealId ->
-                    navigateToMealDetail(mealId)
-                })
+                if (viewstate.loading) {
+                    Text("Loading meals...")
+                } else if (viewstate.error != null) {
+                    Text("Error: ${viewstate.error}")
+                } else {
+                    MealList(meals = viewstate.list, onMealClicked = { mealId ->
+                        navigateToMealDetail(mealId)
+                    })
+                }
             }
         }
     )
 }
 
 @Composable
-fun MealList(meals: List<Meal>, onMealClicked: (String) -> Unit)
-{
+fun MealList(meals: List<Meal>, onMealClicked: (String) -> Unit) {
     LazyVerticalGrid(
         GridCells.Fixed(3),
-        modifier = Modifier.fillMaxSize()) {
-        items(meals){
-                meal ->
+        modifier = Modifier.fillMaxSize()
+    ) {
+        items(meals) { meal ->
             ListItem(meal = meal, onMealClicked = onMealClicked)
         }
     }
 }
 
 @Composable
-fun ListItem(meal: Meal, onMealClicked: (String) -> Unit)
-{
+fun ListItem(meal: Meal, onMealClicked: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -113,7 +115,7 @@ fun ListItem(meal: Meal, onMealClicked: (String) -> Unit)
                 .size(120.dp)
                 .clip(CircleShape)
                 .clickable {
-                    onMealClicked(meal.idMeal) // Pass meal ID to onMealClicked
+                    onMealClicked(meal.idMeal)
                 },
             contentScale = ContentScale.Crop
         )

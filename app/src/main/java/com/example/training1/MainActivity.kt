@@ -51,8 +51,8 @@ class MainActivity : ComponentActivity() {
                         NavHost(navController = navController, startDestination = Screen.HomeScreen.route, modifier = Modifier.padding(contentPadding)){
                             composable(route = Screen.HomeScreen.route){
                                 HomeScreen(navigateToCategory = {
-                                        navController.navigate(Screen.CategoryScreen.route)
-                                    },
+                                    navController.navigate(Screen.CategoryScreen.route)
+                                },
                                     navigateToMealDetail = {
                                         navController.navigate(Screen.DetailFeaturedScreen.route)
                                     }
@@ -62,12 +62,12 @@ class MainActivity : ComponentActivity() {
                                 CategoryScreen(viewstate)
                             }
 
-                            composable(route = Screen.MealListScreen.route){
+                            composable(route = Screen.MealListScreen.route) {
                                 MealListScreen(viewstate2, navigateToMealDetail = { mealId ->
+                                    recipeViewModel.fetchMealDetail(mealId)
                                     navController.navigate(Screen.MealDetailScreen.route) {
                                         popUpTo(Screen.MealListScreen.route) { inclusive = true }
                                     }
-                                    recipeViewModel.getMealID = mealId // Update meal ID in ViewModel
                                 })
                             }
 
