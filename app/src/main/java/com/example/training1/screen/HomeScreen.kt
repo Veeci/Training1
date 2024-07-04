@@ -34,7 +34,8 @@ import com.example.training1.model.MainViewModel
 
 @Composable
 fun HomeScreen(
-    navigateToCategory: () -> Unit
+    navigateToCategory: () -> Unit,
+    navigateToMealDetail: (String) -> Unit
 ) {
     val receiptViewModel: MainViewModel = viewModel()
     val viewstate by receiptViewModel.categoriesState
@@ -110,7 +111,7 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
                     Text(
-                        text = "Popular Deals",
+                        text = "Featured Seafood",
                         style = MaterialTheme.typography.headlineMedium,
                         modifier = Modifier.padding(top = 10.dp)
                     )
@@ -123,7 +124,12 @@ fun HomeScreen(
                     )
                 }
 
-                FeaturedMealScrollview(featuredMeals = viewstate2.list)
+                FeaturedMealScrollview(
+                    featuredMeals = viewstate2.list,
+                    onMealClicked = { mealId ->
+                        navigateToMealDetail(mealId)
+                    }
+                )
 
             }
         },
@@ -172,19 +178,22 @@ fun ScrollviewCategoryItem(category: Category)
 
 //Display featured meals list
 @Composable
-fun FeaturedMealScrollview(featuredMeals: List<FeaturedMeal>)
-{
+fun FeaturedMealScrollview(
+    featuredMeals: List<FeaturedMeal>,
+    onMealClicked: (String) -> Unit // Add this parameter
+) {
     LazyRow {
-        items(featuredMeals.size){
-            index ->
-            ScrollViewFeaturedMealItem(featuredMeal = featuredMeals[index])
+        items(featuredMeals.size) { index ->
+            ScrollViewFeaturedMealItem(featuredMeal = featuredMeals[index]) {
+                onMealClicked(featuredMeals[index].idMeal)
+            }
         }
     }
 }
 
 //Display a single featured meal
 @Composable
-fun ScrollViewFeaturedMealItem(featuredMeal: FeaturedMeal)
+fun ScrollViewFeaturedMealItem(featuredMeal: FeaturedMeal, onMealClicked: () -> Unit )
 {
     val mealNameColor = colorResource(id = R.color.featuredMealName)
 
@@ -198,7 +207,10 @@ fun ScrollViewFeaturedMealItem(featuredMeal: FeaturedMeal)
             contentDescription = null,
             modifier = Modifier
                 .size(150.dp)
-                .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)),
+                .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
+                .clickable {
+                    onMealClicked()
+                },
             contentScale = ContentScale.Crop
         )
 
@@ -225,103 +237,6 @@ fun ScrollViewFeaturedMealItem(featuredMeal: FeaturedMeal)
 
                     }
             )
-        }
-    }
-}
-
-@Composable
-fun MenuBar()
-{
-    val textColor = colorResource(id = R.color.featuredMealName)
-
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween) {
-
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(
-                painterResource(id = R.drawable.ic_home_btn),
-                contentDescription = "",
-                modifier = Modifier.clickable {
-
-                }
-            )
-
-            Text(
-                text = "Home",
-                fontSize = 10.sp,
-                color = textColor
-            )
-
-        }
-
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(
-                painterResource(id = R.drawable.ic_search_btn),
-                contentDescription = "",
-                modifier = Modifier.clickable {
-
-                }
-            )
-
-            Text(
-                text = "Explore",
-                fontSize = 10.sp,
-                color = textColor
-            )
-
-        }
-
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(
-                painterResource(id = R.drawable.ic_cart_btn),
-                contentDescription = "",
-                modifier = Modifier.clickable {
-
-                }
-            )
-
-            Text(
-                text = "Cart",
-                fontSize = 10.sp,
-                color = textColor
-            )
-
-        }
-
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(
-                painterResource(id = R.drawable.ic_fav_btn),
-                contentDescription = "",
-                modifier = Modifier.clickable {
-
-                }
-            )
-
-            Text(
-                text = "Favourite",
-                fontSize = 10.sp,
-                color = textColor
-            )
-
-        }
-
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(
-                painterResource(id = R.drawable.ic_user_btn),
-                contentDescription = "",
-                modifier = Modifier.clickable {
-
-                }
-            )
-
-            Text(
-                text = "Account",
-                fontSize = 10.sp,
-                color = textColor
-            )
-
         }
     }
 }

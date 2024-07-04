@@ -2,7 +2,6 @@ package com.example.training1.model
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.training1.api.apiService
@@ -15,11 +14,22 @@ class MainViewModel : ViewModel() {
     private val _featuredMealsState = mutableStateOf(FeaturedMealState())
     val featuredMealsState: State<FeaturedMealState> = _featuredMealsState
 
+    private val _MealState = mutableStateOf(MealListState())
+    val mealState: State<MealListState> = _MealState
+
+    private val _MealDetailState = mutableStateOf(MealDetailState())
+    val mealDetailState: State<MealDetailState> = _MealDetailState
+
+    var getMealID: String = ""
+
     init {
         fetchCategories()
         fetchFeaturedMeals()
+        fetchMealList()
+        fetchMealDetail()
     }
 
+    //Fetch categories
     private fun fetchCategories()
     {
         viewModelScope.launch {
@@ -42,6 +52,13 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    data class RecipeState(
+        val loading: Boolean = true,
+        val list: List<Category> = emptyList(),
+        val error: String? = null)
+
+
+    //Fetch featured meals
     private fun fetchFeaturedMeals()
     {
         viewModelScope.launch {
@@ -64,13 +81,65 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    data class RecipeState(
-        val loading: Boolean = true,
-        val list: List<Category> = emptyList(),
-        val error: String? = null)
-
     data class FeaturedMealState(
         val loading: Boolean = true,
         val list: List<FeaturedMeal> = emptyList(),
         val error: String? = null)
+
+    //Fetch meal list
+    private fun fetchMealList()
+    {
+        viewModelScope.launch {
+            try
+            {
+                val response = apiService.getMealsByName("a")
+                _MealState.value = _MealState.value.copy(
+                    loading = false,
+                    list = response.meal,
+                    error = null
+                )
+            }
+            catch (e: Exception)
+            {
+                _featuredMealsState.value = _featuredMealsState.value.copy(
+                    loading = false,
+                    error = "Error fetching meal: + ${e.message}"
+                )
+            }
+        }
+    }
+
+    data class MealListState(
+        val loading: Boolean = true,
+        val list: List<Meal> = emptyList(),
+        val error: String? = null)
+
+    //Fetch meal detail
+    private fun fetchMealDetail()
+    {
+        viewModelScope.launch {
+            try{
+                val response = apiService.getMealDetail(getMealID)
+                val _MealDetailState = mutableStateOf(MealDetailState())
+                _MealDetailState.value = _MealDetailState.value.copy(
+                    loading = false,
+                    meal = response.meal,
+                    error = null
+                )
+            }
+            catch (e: Exception)
+            {
+                _featuredMealsState.value = _featuredMealsState.value.copy(
+                    loading = false,
+                    error = "Error fetching meal detail: + ${e.message}"
+                )
+            }
+        }
+    }
+
+    data class MealDetailState(
+        val loading: Boolean = true,
+        val meal: Meal = Meal("", "", "", "", "", ""),
+        val error: String? = null
+    )
 }
