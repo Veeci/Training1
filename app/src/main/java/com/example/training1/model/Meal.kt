@@ -19,5 +19,5 @@ data class MealResponse(
 )
 
 data class MealDetailResponse(
-    @SerializedName("meals") val meal: Meal
+    @SerializedName("meals") val meal: List<Meal>
 )

@@ -32,7 +32,7 @@ class MainViewModel : ViewModel() {
                 val response = apiService.getMealDetail(idMeal)
                 _mealDetailState.value = _mealDetailState.value.copy(
                     loading = false,
-                    meal = response.meal,
+                    meal = response.meal.first(),
                     error = null
                 )
             } catch (e: Exception) {
