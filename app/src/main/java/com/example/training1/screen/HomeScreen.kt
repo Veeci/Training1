@@ -29,8 +29,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.training1.R
 import com.example.training1.model.Category
-import com.example.training1.model.FeaturedMeal
 import com.example.training1.model.MainViewModel
+import com.example.training1.model.Meal
 
 @Composable
 fun HomeScreen(
@@ -39,7 +39,7 @@ fun HomeScreen(
 ) {
     val receiptViewModel: MainViewModel = viewModel()
     val viewstate by receiptViewModel.categoriesState
-    val viewstate2 by receiptViewModel.featuredMealsState
+    val viewstate2 by receiptViewModel.mealState2
 
     val primaryColor = colorResource(id = R.color.mainTheme)
 
@@ -111,7 +111,7 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
                     Text(
-                        text = "Featured Seafood",
+                        text = "Featured Meals",
                         style = MaterialTheme.typography.headlineMedium,
                         modifier = Modifier.padding(top = 10.dp)
                     )
@@ -125,7 +125,7 @@ fun HomeScreen(
                 }
 
                 FeaturedMealScrollview(
-                    featuredMeals = viewstate2.list,
+                    meals = viewstate2.list,
                     onMealClicked = { mealId ->
                         navigateToMealDetail(mealId)
                     }
@@ -168,7 +168,7 @@ fun ScrollviewCategoryItem(category: Category)
         )
 
         Text(
-            text = category.strCategory?: "Unknown category",
+            text = category.strCategory,
             color = Color.Black,
             style = TextStyle(fontWeight = FontWeight.Bold),
             fontSize = 12.sp
@@ -179,13 +179,13 @@ fun ScrollviewCategoryItem(category: Category)
 //Display featured meals list
 @Composable
 fun FeaturedMealScrollview(
-    featuredMeals: List<FeaturedMeal>,
+    meals: List<Meal>,
     onMealClicked: (String) -> Unit // Add this parameter
 ) {
     LazyRow {
-        items(featuredMeals.size) { index ->
-            ScrollViewFeaturedMealItem(featuredMeal = featuredMeals[index]) {
-                onMealClicked(featuredMeals[index].idMeal)
+        items(meals.size) { index ->
+            ScrollViewFeaturedMealItem(meal = meals[index]) {
+                onMealClicked(meals[index].idMeal)
             }
         }
     }
@@ -193,7 +193,7 @@ fun FeaturedMealScrollview(
 
 //Display a single featured meal
 @Composable
-fun ScrollViewFeaturedMealItem(featuredMeal: FeaturedMeal, onMealClicked: () -> Unit )
+fun ScrollViewFeaturedMealItem(meal: Meal, onMealClicked: (String) -> Unit )
 {
     val mealNameColor = colorResource(id = R.color.featuredMealName)
 
@@ -203,13 +203,13 @@ fun ScrollViewFeaturedMealItem(featuredMeal: FeaturedMeal, onMealClicked: () -> 
         .clip(RoundedCornerShape(8.dp))
     ){
         Image(
-            painter = rememberAsyncImagePainter(featuredMeal.strMealThumb),
+            painter = rememberAsyncImagePainter(meal.strMealThumb),
             contentDescription = null,
             modifier = Modifier
                 .size(150.dp)
                 .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
                 .clickable {
-                    onMealClicked()
+                    onMealClicked(meal.idMeal)
                 },
             contentScale = ContentScale.Crop
         )
@@ -221,7 +221,7 @@ fun ScrollViewFeaturedMealItem(featuredMeal: FeaturedMeal, onMealClicked: () -> 
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = featuredMeal.strMeal,
+                text = meal.strMeal,
                 color = mealNameColor,
                 fontSize = 14.sp,
                 modifier = Modifier

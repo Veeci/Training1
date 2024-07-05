@@ -1,7 +1,6 @@
 package com.example.training1.api
 
 import com.example.training1.model.CategoriesResponse
-import com.example.training1.model.FeatureMealResponse
 import com.example.training1.model.MealDetailResponse
 import com.example.training1.model.MealResponse
 import retrofit2.Retrofit
@@ -17,9 +16,6 @@ val apiService = retrofit.create(ApiService::class.java)
 interface ApiService {
     @GET("categories.php")
     suspend fun getCategories(): CategoriesResponse
-
-    @GET("filter.php")
-    suspend fun getFeaturedMeals(@Query("c") category: String): FeatureMealResponse
 
     @GET("search.php")
     suspend fun getMealsByName(@Query("f") area: String): MealResponse

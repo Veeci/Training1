@@ -53,8 +53,11 @@ class MainActivity : ComponentActivity() {
                                 HomeScreen(navigateToCategory = {
                                     navController.navigate(Screen.CategoryScreen.route)
                                 },
-                                    navigateToMealDetail = {
-                                        navController.navigate(Screen.DetailFeaturedScreen.route)
+                                    navigateToMealDetail = { mealId ->
+                                        recipeViewModel.fetchMealDetail(mealId)
+                                        navController.navigate(Screen.MealDetailScreen.route) {
+                                            popUpTo(Screen.MealListScreen.route) { inclusive = true }
+                                        }
                                     }
                                 )
                             }
