@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,16 +18,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.training1.R
 
-@Preview(showBackground = true)
 @Composable
-fun StarterScreen() {
+fun StarterScreen(navController: NavController) {
     Column(
         modifier = Modifier
+            .verticalScroll(rememberScrollState())
             .fillMaxSize()
             .wrapContentHeight()
             .padding(16.dp),
@@ -66,7 +68,9 @@ fun StarterScreen() {
                 .height(50.dp)
                 .align(Alignment.CenterHorizontally)
                 .clickable {
-
+                    navController.navigate(Screen.SignUpScreen.route){
+                        popUpTo(Screen.SignUpScreen.route) { inclusive = true }
+                    }
                 }
         )
 

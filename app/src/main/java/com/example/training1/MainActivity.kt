@@ -32,6 +32,10 @@ import com.example.training1.screen.HomeScreen
 import com.example.training1.screen.MealDetailScreen
 import com.example.training1.screen.MealListScreen
 import com.example.training1.screen.Screen
+import com.example.training1.screen.SignInScreen
+import com.example.training1.screen.SignUpScreen
+import com.example.training1.screen.SignUpStep2Screen
+import com.example.training1.screen.StarterScreen
 import com.example.training1.ui.theme.Training1Theme
 
 class MainActivity : ComponentActivity() {
@@ -61,6 +65,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             }
+
                             composable(route = Screen.CategoryScreen.route){
                                 CategoryScreen(viewstate)
                             }

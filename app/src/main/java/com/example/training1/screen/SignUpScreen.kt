@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
@@ -33,19 +35,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.training1.R
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(navController: NavController) {
     var textFullName by remember { mutableStateOf("") }
     var textEmail by remember { mutableStateOf("") }
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
         Row(
             modifier = Modifier
@@ -90,7 +93,7 @@ fun SignUpScreen() {
                 isError = textFullName.isEmpty(),
                 modifier = Modifier
                     .width(343.dp)
-                    .height(48.dp),
+                    .height(70.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent
@@ -114,7 +117,7 @@ fun SignUpScreen() {
                 isError = textEmail.isEmpty(),
                 modifier = Modifier
                     .width(343.dp)
-                    .height(48.dp),
+                    .height(70.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent
@@ -143,7 +146,9 @@ fun SignUpScreen() {
                         .width(343.dp)
                         .height(50.dp)
                         .clickable {
-
+                            navController.navigate(Screen.SignUpStep2Screen.route){
+                                popUpTo(Screen.SignUpStep2Screen.route) { inclusive = true }
+                            }
                         }
                 )
 

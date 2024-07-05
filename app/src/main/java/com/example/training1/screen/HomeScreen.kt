@@ -180,7 +180,7 @@ fun ScrollviewCategoryItem(category: Category)
 @Composable
 fun FeaturedMealScrollview(
     meals: List<Meal>,
-    onMealClicked: (String) -> Unit // Add this parameter
+    onMealClicked: (String) -> Unit
 ) {
     LazyRow {
         items(meals.size) { index ->

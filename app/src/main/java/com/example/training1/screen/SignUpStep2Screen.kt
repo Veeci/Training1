@@ -2,23 +2,21 @@ package com.example.training1.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -35,18 +33,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.training1.R
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun SignUpStep2Screen() {
+fun SignUpStep2Screen(navController: NavController) {
     var textPassword by remember { mutableStateOf("") }
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
         Row(
             modifier = Modifier
@@ -107,7 +106,7 @@ fun SignUpStep2Screen() {
                 isError = textPassword.isEmpty(),
                 modifier = Modifier
                     .width(343.dp)
-                    .height(48.dp),
+                    .height(70.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent
@@ -134,7 +133,7 @@ fun SignUpStep2Screen() {
                 isError = textPassword.isEmpty(),
                 modifier = Modifier
                     .width(343.dp)
-                    .height(48.dp),
+                    .height(70.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent
@@ -155,7 +154,9 @@ fun SignUpStep2Screen() {
                         .width(343.dp)
                         .height(50.dp)
                         .clickable {
-
+                            navController.navigate(Screen.SignInScreen.route){
+                                popUpTo(Screen.SignInScreen.route) { inclusive = true }
+                            }
                         }
                 )
 
