@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "535002449851",
+    "firebase_url": "https://ecommerce-app-2caec-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "ecommerce-app-2caec",
+    "storage_bucket": "ecommerce-app-2caec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:535002449851:android:5c541a129f0437c7eba69e",
+        "android_client_info": {
+          "package_name": "com.example.training1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkzalWI677sfXZ7U9tVri2lEP65JPozhg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

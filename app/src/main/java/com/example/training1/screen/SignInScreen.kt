@@ -1,5 +1,6 @@
 package com.example.training1.screen
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,12 +34,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
+import com.example.training1.AuthActivity
+import com.example.training1.MainActivity
 import com.example.training1.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,6 +51,10 @@ import com.example.training1.R
 fun SignInScreen(navController: NavController) {
     var textEmail by remember { mutableStateOf("") }
     var textPassword by remember { mutableStateOf("") }
+
+    val context = LocalContext.current
+    val intent = Intent(context, MainActivity::class.java)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -169,7 +178,7 @@ fun SignInScreen(navController: NavController) {
                         .width(343.dp)
                         .height(50.dp)
                         .clickable {
-
+                            startActivity(context, intent, null)
                         }
                 )
 
@@ -181,9 +190,7 @@ fun SignInScreen(navController: NavController) {
                         .align(Alignment.TopCenter)
                         .padding(top = 15.dp)
                         .clickable {
-                            navController.navigate(Screen.HomeScreen.route){
-                                popUpTo(Screen.HomeScreen.route) { inclusive = true }
-                            }
+
                         }
                 )
             }

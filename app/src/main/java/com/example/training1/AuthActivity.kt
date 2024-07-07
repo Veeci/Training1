@@ -1,5 +1,6 @@
 package com.example.training1
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,6 +27,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.training1.model.MainViewModel
+import com.example.training1.screen.HomeScreen
 import com.example.training1.screen.Screen
 import com.example.training1.screen.SignInScreen
 import com.example.training1.screen.SignUpScreen
@@ -39,6 +42,7 @@ class AuthActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
+            val recipeViewModel: MainViewModel = viewModel()
 
             AuthTheme {
                 Scaffold(
@@ -58,6 +62,19 @@ class AuthActivity : ComponentActivity() {
 
                             composable(route = Screen.SignInScreen.route){
                                 SignInScreen(navController)
+                            }
+
+                            composable(route = Screen.HomeScreen.route){
+                                HomeScreen(navigateToCategory = {
+                                    navController.navigate(Screen.CategoryScreen.route)
+                                },
+                                    navigateToMealDetail = { mealId ->
+                                        recipeViewModel.fetchMealDetail(mealId)
+                                        navController.navigate(Screen.MealDetailScreen.route) {
+                                            popUpTo(Screen.MealListScreen.route) { inclusive = true }
+                                        }
+                                    }
+                                )
                             }
                         }
                     }
