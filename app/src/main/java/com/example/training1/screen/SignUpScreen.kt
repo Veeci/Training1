@@ -39,10 +39,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.training1.R
+import com.example.training1.model.SignUpViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpScreen(navController: NavController) {
+fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel) {
     var textFullName by remember { mutableStateOf("") }
     var textEmail by remember { mutableStateOf("") }
     Box(
@@ -79,8 +80,8 @@ fun SignUpScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(120.dp))
 
             OutlinedTextField(
-                value = textFullName,
-                onValueChange = { textFullName = it },
+                value = viewModel.fullName,
+                onValueChange = { viewModel.fullName = it },
                 label = { Text("Full name") },
                 placeholder = {
                     Text(
@@ -103,8 +104,8 @@ fun SignUpScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedTextField(
-                value = textEmail,
-                onValueChange = { textEmail = it },
+                value = viewModel.email,
+                onValueChange = { viewModel.email = it },
                 label = { Text("Email") },
                 placeholder = {
                     Text(

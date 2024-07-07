@@ -37,11 +37,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.training1.R
+import com.example.training1.model.SignUpViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpStep2Screen(navController: NavController) {
-    var textPassword by remember { mutableStateOf("") }
+fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -90,8 +90,8 @@ fun SignUpStep2Screen(navController: NavController) {
             Spacer(modifier = Modifier.height(60.dp))
 
             OutlinedTextField(
-                value = textPassword,
-                onValueChange = { textPassword = it },
+                value = viewModel.password,
+                onValueChange = { viewModel.password = it },
                 label = { Text("Password") },
                 placeholder = {
                     Text(
@@ -103,7 +103,7 @@ fun SignUpStep2Screen(navController: NavController) {
                     Icon(Icons.Filled.Lock, contentDescription = "Password")
                 },
                 visualTransformation = PasswordVisualTransformation(),
-                isError = textPassword.isEmpty(),
+                isError = viewModel.password.isEmpty(),
                 modifier = Modifier
                     .width(343.dp)
                     .height(70.dp),
@@ -117,8 +117,8 @@ fun SignUpStep2Screen(navController: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedTextField(
-                value = textPassword,
-                onValueChange = { textPassword = it },
+                value = viewModel.password,
+                onValueChange = { viewModel.password = it },
                 label = { Text("Confirm Password") },
                 placeholder = {
                     Text(
@@ -130,7 +130,7 @@ fun SignUpStep2Screen(navController: NavController) {
                     Icon(Icons.Filled.Lock, contentDescription = "Password")
                 },
                 visualTransformation = PasswordVisualTransformation(),
-                isError = textPassword.isEmpty(),
+                isError = viewModel.password.isEmpty(),
                 modifier = Modifier
                     .width(343.dp)
                     .height(70.dp),
@@ -155,13 +155,14 @@ fun SignUpStep2Screen(navController: NavController) {
                         .height(50.dp)
                         .clickable {
                             navController.navigate(Screen.SignInScreen.route){
+                                viewModel.saveUser()
                                 popUpTo(Screen.SignInScreen.route) { inclusive = true }
                             }
                         }
                 )
 
                 Text(
-                    text = "Next",
+                    text = "Go to Sign in",
                     color = Color.White,
                     fontSize = 20.sp,
                     modifier = Modifier
