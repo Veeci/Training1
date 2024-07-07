@@ -84,7 +84,10 @@ fun StarterScreen(navController: NavController) {
                 .height(50.dp)
                 .align(Alignment.CenterHorizontally)
                 .clickable {
-
+                    navController.navigate(Screen.SignInScreen.route)
+                    {
+                        popUpTo(Screen.SignInScreen.route) { inclusive = true }
+                    }
                 }
         )
     }

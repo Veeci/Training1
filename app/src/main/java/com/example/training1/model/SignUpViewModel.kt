@@ -5,20 +5,29 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class SignUpViewModel: ViewModel() {
     var fullName by mutableStateOf("")
     var email by mutableStateOf("")
     var password by mutableStateOf("")
 
-    private val database = FirebaseDatabase.getInstance().reference
+    var errorMessage by mutableStateOf<String?>(null)
 
-    fun saveUser() {
+    private val auth = FirebaseAuth.getInstance()
+
+    fun signUp(onSuccess: () -> Unit) {
         viewModelScope.launch {
-            val user = User(fullName, email, password)
-            database.child("Users").push().setValue(user)
+            try {
+                val trimmedEmail = email.trim()
+                val authResult = auth.createUserWithEmailAndPassword(trimmedEmail, password).await()
+                onSuccess()
+            } catch (e: Exception) {
+                errorMessage = e.message
+            }
         }
     }
 }

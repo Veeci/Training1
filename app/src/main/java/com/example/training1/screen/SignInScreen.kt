@@ -27,10 +27,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,19 +37,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
-import com.example.training1.AuthActivity
 import com.example.training1.MainActivity
 import com.example.training1.R
+import com.example.training1.model.SignInViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignInScreen(navController: NavController) {
-    var textEmail by remember { mutableStateOf("") }
-    var textPassword by remember { mutableStateOf("") }
+fun SignInScreen(navController: NavController, viewModel: SignInViewModel) {
 
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val intent = Intent(context, MainActivity::class.java)
 
     Box(
@@ -98,8 +94,8 @@ fun SignInScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(60.dp))
 
             OutlinedTextField(
-                value = textEmail,
-                onValueChange = { textEmail = it },
+                value = viewModel.email,
+                onValueChange = { viewModel.email = it.trim() },
                 label = { Text("Email") },
                 placeholder = {
                     Text(
@@ -109,7 +105,7 @@ fun SignInScreen(navController: NavController) {
                 },
                 leadingIcon = {
                     Icon(Icons.Filled.Email, contentDescription = "Email") },
-                isError = textEmail.isEmpty(),
+                isError = viewModel.email.isEmpty() || viewModel.errorMessage == "Invalid email format",
                 modifier = Modifier
                     .fillMaxWidth()
                     .width(343.dp)
@@ -120,11 +116,19 @@ fun SignInScreen(navController: NavController) {
                 )
             )
 
+            if (viewModel.errorMessage == "Invalid email format") {
+                Text(
+                    text = viewModel.errorMessage ?: "",
+                    color = Color.Red,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+
             Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedTextField(
-                value = textPassword,
-                onValueChange = { textPassword = it },
+                value = viewModel.password,
+                onValueChange = { viewModel.password = it },
                 label = { Text("Password") },
                 placeholder = {
                     Text(
@@ -136,7 +140,7 @@ fun SignInScreen(navController: NavController) {
                     Icon(Icons.Filled.Lock, contentDescription = "Password")
                 },
                 visualTransformation = PasswordVisualTransformation(),
-                isError = textPassword.isEmpty(),
+                isError = viewModel.password.isEmpty(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .width(343.dp)
@@ -178,7 +182,11 @@ fun SignInScreen(navController: NavController) {
                         .width(343.dp)
                         .height(50.dp)
                         .clickable {
-                            startActivity(context, intent, null)
+                            coroutineScope.launch {
+                                viewModel.signIn {
+                                    context.startActivity(Intent(context, MainActivity::class.java))
+                                }
+                            }
                         }
                 )
 
@@ -189,9 +197,6 @@ fun SignInScreen(navController: NavController) {
                     modifier = Modifier
                         .align(Alignment.TopCenter)
                         .padding(top = 15.dp)
-                        .clickable {
-
-                        }
                 )
             }
 

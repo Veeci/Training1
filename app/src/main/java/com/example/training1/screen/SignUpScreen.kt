@@ -26,10 +26,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,8 +40,6 @@ import com.example.training1.model.SignUpViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel) {
-    var textFullName by remember { mutableStateOf("") }
-    var textEmail by remember { mutableStateOf("") }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -91,7 +85,7 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel) {
                 },
                 leadingIcon = {
                     Icon(Icons.Filled.Person, contentDescription = "Full name") },
-                isError = textFullName.isEmpty(),
+                isError = viewModel.fullName.isEmpty(),
                 modifier = Modifier
                     .width(343.dp)
                     .height(70.dp),
@@ -105,7 +99,7 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel) {
 
             OutlinedTextField(
                 value = viewModel.email,
-                onValueChange = { viewModel.email = it },
+                onValueChange = { viewModel.email = it.trim() },
                 label = { Text("Email") },
                 placeholder = {
                     Text(
@@ -115,7 +109,7 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel) {
                 },
                 leadingIcon = {
                     Icon(Icons.Filled.Email, contentDescription = "Email") },
-                isError = textEmail.isEmpty(),
+                isError = viewModel.email.isEmpty(),
                 modifier = Modifier
                     .width(343.dp)
                     .height(70.dp),
@@ -147,8 +141,10 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel) {
                         .width(343.dp)
                         .height(50.dp)
                         .clickable {
-                            navController.navigate(Screen.SignUpStep2Screen.route){
-                                popUpTo(Screen.SignUpStep2Screen.route) { inclusive = true }
+                            viewModel.signUp {
+                                navController.navigate(Screen.SignUpStep2Screen.route) {
+                                    popUpTo(Screen.SignUpStep2Screen.route) { inclusive = true }
+                                }
                             }
                         }
                 )

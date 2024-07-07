@@ -1,33 +1,18 @@
 package com.example.training1
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.training1.model.MainViewModel
+import com.example.training1.model.SignInViewModel
 import com.example.training1.model.SignUpViewModel
 import com.example.training1.screen.HomeScreen
 import com.example.training1.screen.Screen
@@ -36,16 +21,19 @@ import com.example.training1.screen.SignUpScreen
 import com.example.training1.screen.SignUpStep2Screen
 import com.example.training1.screen.StarterScreen
 import com.example.training1.ui.theme.AuthTheme
+import com.google.firebase.FirebaseApp
 
 class AuthActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
             val recipeViewModel: MainViewModel = viewModel()
 
-            val viewModel: SignUpViewModel = viewModel()
+            val vmSignUp: SignUpViewModel = viewModel()
+            val vmSignIn: SignInViewModel = viewModel()
 
             AuthTheme {
                 Scaffold(
@@ -56,15 +44,15 @@ class AuthActivity : ComponentActivity() {
                             }
 
                             composable(route = Screen.SignUpScreen.route){
-                                SignUpScreen(navController, viewModel)
+                                SignUpScreen(navController, vmSignUp)
                             }
 
                             composable(route = Screen.SignUpStep2Screen.route){
-                                SignUpStep2Screen(navController, viewModel)
+                                SignUpStep2Screen(navController, vmSignUp)
                             }
 
                             composable(route = Screen.SignInScreen.route){
-                                SignInScreen(navController)
+                                SignInScreen(navController, vmSignIn)
                             }
 
                             composable(route = Screen.HomeScreen.route){

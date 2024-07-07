@@ -23,10 +23,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -154,9 +150,10 @@ fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) 
                         .width(343.dp)
                         .height(50.dp)
                         .clickable {
-                            navController.navigate(Screen.SignInScreen.route){
-                                viewModel.saveUser()
-                                popUpTo(Screen.SignInScreen.route) { inclusive = true }
+                            viewModel.signUp {
+                                navController.navigate(Screen.SignInScreen.route){
+                                    popUpTo(Screen.SignInScreen.route) { inclusive = true }
+                                }
                             }
                         }
                 )
