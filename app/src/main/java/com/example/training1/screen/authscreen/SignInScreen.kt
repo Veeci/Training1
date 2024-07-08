@@ -1,12 +1,16 @@
-package com.example.training1.screen
+package com.example.training1.screen.authscreen
 
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,6 +20,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -37,14 +42,19 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.training1.MainActivity
 import com.example.training1.R
 import com.example.training1.model.SignUpViewModel
+import com.example.training1.screen.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) {
-    val context = LocalContext.current
+fun SignInScreen(navController: NavController, viewModel: SignUpViewModel) {
 
+    val context = LocalContext.current
+    val intent = Intent(context, MainActivity::class.java)
+
+    var textEmail by remember { mutableStateOf("") }
     var textPassword by remember { mutableStateOf("") }
 
     Box(
@@ -71,7 +81,7 @@ fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) 
                 .padding(top = 48.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.img_signup2_background),
+                painter = painterResource(id = R.drawable.img_signin_background),
                 contentDescription = "SignUpScreen",
                 modifier = Modifier
                     .width(348.27.dp)
@@ -81,22 +91,50 @@ fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) 
             Spacer(modifier = Modifier.height(30.dp))
 
             Text(
-                text = "Enter the password",
+                text = "Enter your email and password to access your account",
                 color = colorResource(id = R.color.featuredMealName),
-                fontSize = 20.sp
+                fontSize = 17.sp
             )
 
-            Text(
-                text = "For the security & safety please choose a password",
-                color = colorResource(id = R.color.featuredMealName),
-                fontSize = 15.sp
-            )
 
             Spacer(modifier = Modifier.height(60.dp))
 
             OutlinedTextField(
-                value = viewModel.password,
-                onValueChange = { viewModel.password = it },
+                value = textEmail,
+                onValueChange = { textEmail = it.trim() },
+                label = { Text("Email") },
+                placeholder = {
+                    Text(
+                        text = "abcd1234@gmail.com",
+                        color = Color(0xFFAC8E71)
+                    )
+                },
+                leadingIcon = {
+                    Icon(Icons.Filled.Email, contentDescription = "Email") },
+                isError = viewModel.email.isEmpty() || viewModel.errorMessage == "Invalid email format",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .width(343.dp)
+                    .height(70.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = Color.Transparent
+                )
+            )
+
+            if (viewModel.errorMessage == "Invalid email format") {
+                Text(
+                    text = viewModel.errorMessage ?: "",
+                    color = Color.Red,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            OutlinedTextField(
+                value = textPassword,
+                onValueChange = { textPassword = it },
                 label = { Text("Password") },
                 placeholder = {
                     Text(
@@ -110,6 +148,7 @@ fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) 
                 visualTransformation = PasswordVisualTransformation(),
                 isError = viewModel.password.isEmpty(),
                 modifier = Modifier
+                    .fillMaxWidth()
                     .width(343.dp)
                     .height(70.dp),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -118,32 +157,22 @@ fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) 
                 )
             )
 
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            OutlinedTextField(
-                value = textPassword,
-                onValueChange = { textPassword = it },
-                label = { Text("Confirm Password") },
-                placeholder = {
-                    Text(
-                        text = "Confirm your password...",
-                        color = Color(0xFFAC8E71)
-                    )
-                },
-                leadingIcon = {
-                    Icon(Icons.Filled.Lock, contentDescription = "Password")
-                },
-                visualTransformation = PasswordVisualTransformation(),
-                isError = viewModel.password.isEmpty(),
+            Spacer(modifier = Modifier.height(15.dp))
+            Row(
                 modifier = Modifier
-                    .width(343.dp)
-                    .height(70.dp),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent
+                    .align(Alignment.End),
+                horizontalArrangement = Arrangement.End
+            ){
+                Text(
+                    text = "Forgot password?",
+                    fontSize = 14.sp,
+                    color = colorResource(id = R.color.mainTheme),
+                    modifier = Modifier
+                        .clickable {
+
+                        }
                 )
-            )
+            }
 
             Spacer(modifier = Modifier.height(40.dp))
             Box(
@@ -159,23 +188,64 @@ fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) 
                         .width(343.dp)
                         .height(50.dp)
                         .clickable {
-                            viewModel.signUp(viewModel.email, textPassword, context)
-                            if(viewModel.checkValid)
+                            if(viewModel.directToLogin)
                             {
-                                navController.navigate(Screen.SignInScreen.route){
-                                    popUpTo(Screen.SignInScreen.route) { inclusive = true }
+                                context.startActivity(intent)
+                            }
+                            else
+                            {
+                                if(viewModel.checkPassword(viewModel.password, textPassword))
+                                {
+                                    viewModel.signIn(textEmail, textPassword, context)
+                                    if(viewModel.checkUser)
+                                    {
+                                        context.startActivity(intent)
+                                    }
+                                }
+                                else
+                                {
+                                    Toast.makeText(context, "Confirm password does not match!", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }
                 )
 
                 Text(
-                    text = "Go to Sign in",
+                    text = "Sign In",
                     color = Color.White,
                     fontSize = 20.sp,
                     modifier = Modifier
                         .align(Alignment.TopCenter)
                         .padding(top = 15.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(5.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Don't have an account?",
+                    color = colorResource(id = R.color.featuredMealName),
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                )
+
+                Text(
+                    text = "Sign up",
+                    color = colorResource(id = R.color.mainTheme),
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .clickable {
+                            navController.navigate(Screen.SignUpScreen.route){
+                                popUpTo(Screen.SignUpScreen.route) { inclusive = true }
+                            }
+                        }
                 )
             }
         }

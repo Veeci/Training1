@@ -1,4 +1,4 @@
-package com.example.training1.screen
+package com.example.training1.screen.homescreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column

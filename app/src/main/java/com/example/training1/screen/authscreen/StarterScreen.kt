@@ -1,4 +1,4 @@
-package com.example.training1.screen
+package com.example.training1.screen.authscreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -22,9 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.training1.R
+import com.example.training1.model.SignUpViewModel
+import com.example.training1.screen.Screen
 
 @Composable
-fun StarterScreen(navController: NavController) {
+fun StarterScreen(navController: NavController, viewModel: SignUpViewModel) {
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
@@ -84,6 +86,7 @@ fun StarterScreen(navController: NavController) {
                 .height(50.dp)
                 .align(Alignment.CenterHorizontally)
                 .clickable {
+                    viewModel.directToLogin = true
                     navController.navigate(Screen.SignInScreen.route)
                     {
                         popUpTo(Screen.SignInScreen.route) { inclusive = true }

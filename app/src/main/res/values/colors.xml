@@ -10,4 +10,5 @@
     <color name="featuredMealName">#6D3805</color>
     <color name="mainTheme">#FF5E00</color>
     <color name="price">#929292</color>
+    <color name="track">#B8B8B8</color>
 </resources>

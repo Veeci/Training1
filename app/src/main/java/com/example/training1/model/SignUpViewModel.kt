@@ -1,12 +1,15 @@
 package com.example.training1.model
 
 import android.content.Context
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.training1.AuthActivity
+import com.example.training1.MainActivity
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -34,7 +37,6 @@ class SignUpViewModel: ViewModel() {
                 }
             } catch (e: Exception) {
                 errorMessage = e.message
-                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -61,4 +63,30 @@ class SignUpViewModel: ViewModel() {
     fun checkPassword(password: String, checkPassword: String): Boolean {
         return password == checkPassword
     }
+
+    fun LogOut(context: Context)
+    {
+        auth.signOut()
+        Toast.makeText(context, "Log out successfully!", Toast.LENGTH_SHORT).show()
+        val intent = Intent(context, AuthActivity::class.java)
+        context.startActivity(intent)
+    }
+
+    var checkRememberPassword: Boolean = false
+    fun handleAuthActivityStart(context: Context) {
+
+        val user = auth.currentUser
+        if(checkRememberPassword)
+        {
+            if (user != null) {
+                val intent = Intent(context, MainActivity::class.java)
+                context.startActivity(intent)
+                if (context is AuthActivity) {
+                    context.finish()
+                }
+            }
+        }
+    }
+
+    var directToLogin: Boolean = false
 }

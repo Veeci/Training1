@@ -1,4 +1,4 @@
-package com.example.training1.screen
+package com.example.training1.screen.authscreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.training1.R
 import com.example.training1.model.SignUpViewModel
+import com.example.training1.screen.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

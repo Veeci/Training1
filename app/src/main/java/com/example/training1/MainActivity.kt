@@ -27,15 +27,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.training1.model.MainViewModel
-import com.example.training1.screen.CategoryScreen
-import com.example.training1.screen.HomeScreen
-import com.example.training1.screen.MealDetailScreen
-import com.example.training1.screen.MealListScreen
+import com.example.training1.model.SignUpViewModel
+import com.example.training1.screen.accountscreen.AccountScreen
+import com.example.training1.screen.homescreen.CategoryScreen
+import com.example.training1.screen.homescreen.HomeScreen
+import com.example.training1.screen.explorescreen.MealDetailScreen
+import com.example.training1.screen.explorescreen.MealListScreen
 import com.example.training1.screen.Screen
-import com.example.training1.screen.SignInScreen
-import com.example.training1.screen.SignUpScreen
-import com.example.training1.screen.SignUpStep2Screen
-import com.example.training1.screen.StarterScreen
+import com.example.training1.screen.accountscreen.AccountSettingScreen
 import com.example.training1.ui.theme.Training1Theme
 
 class MainActivity : ComponentActivity() {
@@ -44,6 +43,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val recipeViewModel: MainViewModel = viewModel()
+            val vmSignUp: SignUpViewModel = viewModel()
+
             val viewstate by recipeViewModel.categoriesState
             val viewstate2 by recipeViewModel.mealState
             val viewstate3 by recipeViewModel.mealDetailState
@@ -81,6 +82,14 @@ class MainActivity : ComponentActivity() {
 
                             composable(route = Screen.MealDetailScreen.route){
                                 MealDetailScreen(viewstate3)
+                            }
+
+                            composable(route = Screen.AccountScreen.route){
+                                AccountScreen(navController)
+                            }
+
+                            composable(route = Screen.AccountSettingScreen.route){
+                                AccountSettingScreen(vmSignUp, context = this@MainActivity)
                             }
                         }
                     },
@@ -179,7 +188,9 @@ class MainActivity : ComponentActivity() {
                     painterResource(id = R.drawable.ic_user_btn),
                     contentDescription = "",
                     modifier = Modifier.clickable {
-
+                        navController.navigate(Screen.AccountScreen.route){
+                            popUpTo(Screen.AccountScreen.route){ inclusive = true }
+                        }
                     }
                 )
 

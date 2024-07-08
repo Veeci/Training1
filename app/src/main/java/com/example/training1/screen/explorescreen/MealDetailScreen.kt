@@ -1,4 +1,4 @@
-package com.example.training1.screen
+package com.example.training1.screen.explorescreen
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
