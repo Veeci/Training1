@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.example.training1.model.Category
+import com.example.training1.model.appmodel.Category
 
 @Composable
 fun CategoryDetailScreen(category: Category) {

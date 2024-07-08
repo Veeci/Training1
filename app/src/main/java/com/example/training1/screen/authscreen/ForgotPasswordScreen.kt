@@ -1,23 +1,21 @@
 package com.example.training1.screen.authscreen
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -30,74 +28,42 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.training1.R
-import com.example.training1.model.viewmodel.SignUpViewModel
-import com.example.training1.screen.Screen
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
 @Composable
-fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) {
-    val context = LocalContext.current
-
+fun ForgotPasswordScreen()
+{
     var textPassword by remember { mutableStateOf("") }
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(
+        Text(
+            text = "Reset your password",
+            color = colorResource(id = R.color.mainTheme),
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .wrapContentHeight()
-                .padding(16.dp)
-                .align(Alignment.TopStart)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_back_btn),
-                contentDescription = "Back",
-                modifier = Modifier.size(8.49.dp, 14.dp)
-            )
-        }
+                .align(Alignment.CenterHorizontally)
+        )
 
         Column(
-            modifier = Modifier
-                .wrapContentHeight()
-                .padding(top = 48.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
+            verticalArrangement = Arrangement.Center
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.img_signup2_background),
-                contentDescription = "SignUpScreen",
-                modifier = Modifier
-                    .width(348.27.dp)
-                    .height(331.63.dp)
-            )
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            Text(
-                text = "Enter the password",
-                color = colorResource(id = R.color.featuredMealName),
-                fontSize = 20.sp
-            )
-
-            Text(
-                text = "For the security & safety please choose a password",
-                color = colorResource(id = R.color.featuredMealName),
-                fontSize = 15.sp
-            )
-
-            Spacer(modifier = Modifier.height(60.dp))
-
             OutlinedTextField(
-                value = viewModel.password,
-                onValueChange = { viewModel.password = it },
+                value = textPassword,
+                onValueChange = { textPassword = it },
                 label = { Text("Password") },
                 placeholder = {
                     Text(
@@ -109,18 +75,12 @@ fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) 
                     Icon(Icons.Filled.Lock, contentDescription = "Password")
                 },
                 visualTransformation = PasswordVisualTransformation(),
-                isError = viewModel.password.isEmpty(),
+                isError = textPassword.isEmpty(),
                 modifier = Modifier
+                    .fillMaxWidth()
                     .width(343.dp)
-                    .height(70.dp),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent
-                )
+                    .height(70.dp)
             )
-
-
-            Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedTextField(
                 value = textPassword,
@@ -136,21 +96,21 @@ fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) 
                     Icon(Icons.Filled.Lock, contentDescription = "Password")
                 },
                 visualTransformation = PasswordVisualTransformation(),
-                isError = viewModel.password.isEmpty(),
+                isError = textPassword.isEmpty(),
                 modifier = Modifier
+                    .fillMaxWidth()
                     .width(343.dp)
-                    .height(70.dp),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent
-                )
+                    .height(70.dp)
             )
+        }
 
-            Spacer(modifier = Modifier.height(40.dp))
+
+        Column(
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
             Box(
                 modifier = Modifier
-                    .wrapContentSize()
-                    .align(Alignment.CenterHorizontally)
+                    .wrapContentSize(),
             )
             {
                 Image(
@@ -160,19 +120,41 @@ fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) 
                         .width(343.dp)
                         .height(50.dp)
                         .clickable {
-                            viewModel.signUp(viewModel.email, textPassword, context)
-                            if(viewModel.checkValid)
-                            {
-                                navController.navigate(Screen.SignInScreen.route){
-                                    popUpTo(Screen.SignInScreen.route) { inclusive = true }
-                                }
-                            }
+
+                        }
+                )
+
+                Text(
+                    text = "Confirm",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 15.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Box(
+                modifier = Modifier
+                    .wrapContentSize(),
+            )
+            {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_minorbtn_background),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .width(343.dp)
+                        .height(50.dp)
+                        .clickable {
+
                         }
                 )
 
                 Text(
                     text = "Go to Sign in",
-                    color = Color.White,
+                    color = colorResource(id = R.color.mainTheme),
                     fontSize = 20.sp,
                     modifier = Modifier
                         .align(Alignment.TopCenter)

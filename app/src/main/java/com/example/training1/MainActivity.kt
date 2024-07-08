@@ -26,8 +26,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.training1.model.MainViewModel
-import com.example.training1.model.SignUpViewModel
+import com.example.training1.model.viewmodel.MainViewModel
+import com.example.training1.model.viewmodel.SignUpViewModel
 import com.example.training1.screen.accountscreen.AccountScreen
 import com.example.training1.screen.homescreen.CategoryScreen
 import com.example.training1.screen.homescreen.HomeScreen

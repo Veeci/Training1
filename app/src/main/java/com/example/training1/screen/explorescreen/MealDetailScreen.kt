@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.training1.R
-import com.example.training1.model.MainViewModel
+import com.example.training1.model.viewmodel.MainViewModel
 
 @Composable
 fun MealDetailScreen(viewstate: MainViewModel.MealDetailState) {

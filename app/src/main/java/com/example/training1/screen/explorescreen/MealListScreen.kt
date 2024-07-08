@@ -32,8 +32,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.training1.R
-import com.example.training1.model.MainViewModel
-import com.example.training1.model.Meal
+import com.example.training1.model.viewmodel.MainViewModel
+import com.example.training1.model.appmodel.Meal
 
 @Composable
 fun MealListScreen(viewstate: MainViewModel.MealListState, navigateToMealDetail: (String) -> Unit) {

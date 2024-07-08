@@ -1,4 +1,4 @@
-package com.example.training1.model
+package com.example.training1.model.viewmodel
 
 import android.content.Context
 import android.content.Intent

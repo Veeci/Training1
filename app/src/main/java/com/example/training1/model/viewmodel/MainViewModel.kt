@@ -1,10 +1,12 @@
-package com.example.training1.model
+package com.example.training1.model.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.training1.api.apiService
+import com.example.training1.model.appmodel.Category
+import com.example.training1.model.appmodel.Meal
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {

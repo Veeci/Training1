@@ -1,6 +1,5 @@
 package com.example.training1
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,10 +12,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.training1.model.MainViewModel
-import com.example.training1.model.SignUpViewModel
+import com.example.training1.model.viewmodel.MainViewModel
+import com.example.training1.model.viewmodel.SignUpViewModel
 import com.example.training1.screen.homescreen.HomeScreen
 import com.example.training1.screen.Screen
+import com.example.training1.screen.authscreen.ForgotPasswordScreen
 import com.example.training1.screen.authscreen.SignInScreen
 import com.example.training1.screen.authscreen.SignUpScreen
 import com.example.training1.screen.authscreen.SignUpStep2Screen
@@ -57,6 +57,10 @@ class AuthActivity : ComponentActivity() {
 
                             composable(route = Screen.SignInScreen.route){
                                 SignInScreen(navController, vmSignUp)
+                            }
+
+                            composable(route = Screen.ForgotPasswordScreen.route){
+                                ForgotPasswordScreen()
                             }
 
                             composable(route = Screen.HomeScreen.route){

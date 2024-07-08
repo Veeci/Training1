@@ -1,8 +1,8 @@
 package com.example.training1.api
 
-import com.example.training1.model.CategoriesResponse
-import com.example.training1.model.MealDetailResponse
-import com.example.training1.model.MealResponse
+import com.example.training1.model.appmodel.CategoriesResponse
+import com.example.training1.model.appmodel.MealDetailResponse
+import com.example.training1.model.appmodel.MealResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET

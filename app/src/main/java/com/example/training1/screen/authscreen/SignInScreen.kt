@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.training1.MainActivity
 import com.example.training1.R
-import com.example.training1.model.SignUpViewModel
+import com.example.training1.model.viewmodel.SignUpViewModel
 import com.example.training1.screen.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)

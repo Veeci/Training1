@@ -1,4 +1,4 @@
-package com.example.training1.model
+package com.example.training1.model.appmodel
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
