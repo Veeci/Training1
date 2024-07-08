@@ -23,9 +23,14 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -38,6 +43,10 @@ import com.example.training1.model.SignUpViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) {
+    val context = LocalContext.current
+
+    var textPassword by remember { mutableStateOf("") }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -113,8 +122,8 @@ fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) 
             Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedTextField(
-                value = viewModel.password,
-                onValueChange = { viewModel.password = it },
+                value = textPassword,
+                onValueChange = { textPassword = it },
                 label = { Text("Confirm Password") },
                 placeholder = {
                     Text(
@@ -150,7 +159,9 @@ fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) 
                         .width(343.dp)
                         .height(50.dp)
                         .clickable {
-                            viewModel.signUp {
+                            viewModel.signUp(viewModel.email, textPassword, context)
+                            if(viewModel.checkValid)
+                            {
                                 navController.navigate(Screen.SignInScreen.route){
                                     popUpTo(Screen.SignInScreen.route) { inclusive = true }
                                 }

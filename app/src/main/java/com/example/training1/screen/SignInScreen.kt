@@ -1,6 +1,7 @@
 package com.example.training1.screen
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +28,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,16 +44,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.training1.MainActivity
 import com.example.training1.R
-import com.example.training1.model.SignInViewModel
-import kotlinx.coroutines.launch
+import com.example.training1.model.SignUpViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignInScreen(navController: NavController, viewModel: SignInViewModel) {
+fun SignInScreen(navController: NavController, viewModel: SignUpViewModel) {
 
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
     val intent = Intent(context, MainActivity::class.java)
+
+    var textEmail by remember { mutableStateOf("") }
+    var textPassword by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -94,8 +99,8 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel) {
             Spacer(modifier = Modifier.height(60.dp))
 
             OutlinedTextField(
-                value = viewModel.email,
-                onValueChange = { viewModel.email = it.trim() },
+                value = textEmail,
+                onValueChange = { textEmail = it.trim() },
                 label = { Text("Email") },
                 placeholder = {
                     Text(
@@ -127,8 +132,8 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel) {
             Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedTextField(
-                value = viewModel.password,
-                onValueChange = { viewModel.password = it },
+                value = textPassword,
+                onValueChange = { textPassword = it },
                 label = { Text("Password") },
                 placeholder = {
                     Text(
@@ -182,10 +187,17 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel) {
                         .width(343.dp)
                         .height(50.dp)
                         .clickable {
-                            coroutineScope.launch {
-                                viewModel.signIn {
-                                    context.startActivity(Intent(context, MainActivity::class.java))
+                            if(viewModel.checkPassword(viewModel.password, textPassword))
+                            {
+                                viewModel.signIn(textEmail, textPassword, context)
+                                if(viewModel.checkUser)
+                                {
+                                    context.startActivity(intent)
                                 }
+                            }
+                            else
+                            {
+                                Toast.makeText(context, "Confirm password does not match!", Toast.LENGTH_SHORT).show()
                             }
                         }
                 )

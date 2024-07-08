@@ -141,10 +141,8 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel) {
                         .width(343.dp)
                         .height(50.dp)
                         .clickable {
-                            viewModel.signUp {
-                                navController.navigate(Screen.SignUpStep2Screen.route) {
-                                    popUpTo(Screen.SignUpStep2Screen.route) { inclusive = true }
-                                }
+                            navController.navigate(Screen.SignUpStep2Screen.route) {
+                                popUpTo(Screen.SignUpStep2Screen.route) { inclusive = true }
                             }
                         }
                 )

@@ -12,7 +12,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.training1.model.MainViewModel
-import com.example.training1.model.SignInViewModel
 import com.example.training1.model.SignUpViewModel
 import com.example.training1.screen.HomeScreen
 import com.example.training1.screen.Screen
@@ -33,7 +32,6 @@ class AuthActivity : ComponentActivity() {
             val recipeViewModel: MainViewModel = viewModel()
 
             val vmSignUp: SignUpViewModel = viewModel()
-            val vmSignIn: SignInViewModel = viewModel()
 
             AuthTheme {
                 Scaffold(
@@ -52,7 +50,7 @@ class AuthActivity : ComponentActivity() {
                             }
 
                             composable(route = Screen.SignInScreen.route){
-                                SignInScreen(navController, vmSignIn)
+                                SignInScreen(navController, vmSignUp)
                             }
 
                             composable(route = Screen.HomeScreen.route){
