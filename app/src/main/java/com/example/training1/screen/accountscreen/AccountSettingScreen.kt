@@ -16,6 +16,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +38,11 @@ fun AccountSettingScreen(viewModel: SignUpViewModel, context: Context)
     var checkRememberPassword by remember { mutableStateOf(false) }
     var checkNotification by remember { mutableStateOf(false) }
     val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.initPreferences(context)
+        checkRememberPassword = viewModel.checkRememberPassword
+    }
 
     Column(
         modifier = Modifier
@@ -180,7 +186,7 @@ fun AccountSettingScreen(viewModel: SignUpViewModel, context: Context)
                     checked = checkRememberPassword,
                     onCheckedChange ={
                         checkRememberPassword = it
-                        viewModel.checkRememberPassword = it
+                        viewModel.setRememberPassword(it)
                     },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = colorResource(id = R.color.white),
@@ -198,7 +204,7 @@ fun AccountSettingScreen(viewModel: SignUpViewModel, context: Context)
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    viewModel.LogOut(context)
+                    viewModel.logOut(context)
                 },
             verticalAlignment = Alignment.CenterVertically
         ) {

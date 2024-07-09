@@ -2,6 +2,7 @@ package com.example.training1.model.viewmodel
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,13 +16,43 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class SignUpViewModel: ViewModel() {
+    private val auth = FirebaseAuth.getInstance()
+
     var fullName by mutableStateOf("")
     var email by mutableStateOf("")
     var password by mutableStateOf("")
 
     var errorMessage by mutableStateOf<String?>(null)
 
-    private val auth = FirebaseAuth.getInstance()
+    private lateinit var preferences: SharedPreferences
+    private val PREF_NAME = "auth_prefs"
+    private val KEY_REMEMBER_PASSWORD = "remember_password"
+    private val KEY_EMAIL = "email"
+    private val KEY_PASSWORD = "password"
+
+    fun initPreferences(context: Context) {
+        preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        checkRememberPassword = preferences.getBoolean(KEY_REMEMBER_PASSWORD, false)
+        if(checkRememberPassword)
+        {
+            email = preferences.getString(KEY_EMAIL, "") ?: ""
+            password = preferences.getString(KEY_PASSWORD, "") ?: ""
+        }
+    }
+
+    var checkRememberPassword by mutableStateOf(false)
+        private set
+
+    fun setRememberPassword(remember: Boolean) {
+        checkRememberPassword = remember
+        preferences.edit().putBoolean(KEY_REMEMBER_PASSWORD, remember).apply()
+        if (remember) {
+            preferences.edit().putString(KEY_EMAIL, email).putString(KEY_PASSWORD, password).apply()
+        } else {
+            preferences.edit().remove(KEY_EMAIL).remove(KEY_PASSWORD).apply()
+        }
+    }
+
 
     var checkValid: Boolean = false
     fun signUp(email: String, password: String, context: Context) {
@@ -64,7 +95,7 @@ class SignUpViewModel: ViewModel() {
         return password == checkPassword
     }
 
-    fun LogOut(context: Context)
+    fun logOut(context: Context)
     {
         auth.signOut()
         Toast.makeText(context, "Log out successfully!", Toast.LENGTH_SHORT).show()
@@ -72,18 +103,15 @@ class SignUpViewModel: ViewModel() {
         context.startActivity(intent)
     }
 
-    var checkRememberPassword: Boolean = false
     fun handleAuthActivityStart(context: Context) {
-
         val user = auth.currentUser
-        if(checkRememberPassword)
-        {
-            if (user != null) {
-                val intent = Intent(context, MainActivity::class.java)
-                context.startActivity(intent)
-                if (context is AuthActivity) {
-                    context.finish()
-                }
+        if (checkRememberPassword && user == null) {
+            signIn(email, password, context)
+        } else if (user != null) {
+            val intent = Intent(context, MainActivity::class.java)
+            context.startActivity(intent)
+            if (context is AuthActivity) {
+                context.finish()
             }
         }
     }

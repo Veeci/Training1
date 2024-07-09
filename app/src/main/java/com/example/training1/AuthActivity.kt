@@ -23,12 +23,8 @@ import com.example.training1.screen.authscreen.SignUpStep2Screen
 import com.example.training1.screen.authscreen.StarterScreen
 import com.example.training1.ui.theme.AuthTheme
 import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
 
 class AuthActivity : ComponentActivity() {
-
-    val auth: FirebaseAuth = FirebaseAuth.getInstance()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
@@ -38,6 +34,7 @@ class AuthActivity : ComponentActivity() {
             val recipeViewModel: MainViewModel = viewModel()
 
             val vmSignUp: SignUpViewModel = viewModel()
+            vmSignUp.initPreferences(this)
 
             AuthTheme {
                 Scaffold(
@@ -85,8 +82,7 @@ class AuthActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
 
-        val vmSignUp = ViewModelProvider(this).get(SignUpViewModel::class.java)
+        val vmSignUp = ViewModelProvider(this)[SignUpViewModel::class.java]
         vmSignUp.handleAuthActivityStart(this)
-
     }
 }

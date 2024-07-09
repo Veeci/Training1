@@ -35,6 +35,8 @@ import com.example.training1.screen.explorescreen.MealDetailScreen
 import com.example.training1.screen.explorescreen.MealListScreen
 import com.example.training1.screen.Screen
 import com.example.training1.screen.accountscreen.AccountSettingScreen
+import com.example.training1.screen.favoritescreen.EmptyFavoriteScreen
+import com.example.training1.screen.favoritescreen.FavoriteScreen
 import com.example.training1.ui.theme.Training1Theme
 
 class MainActivity : ComponentActivity() {
@@ -90,6 +92,10 @@ class MainActivity : ComponentActivity() {
 
                             composable(route = Screen.AccountSettingScreen.route){
                                 AccountSettingScreen(vmSignUp, context = this@MainActivity)
+                            }
+
+                            composable(route = Screen.FavoriteScreen.route){
+                                EmptyFavoriteScreen()
                             }
                         }
                     },
@@ -171,7 +177,9 @@ class MainActivity : ComponentActivity() {
                     painterResource(id = R.drawable.ic_fav_btn),
                     contentDescription = "",
                     modifier = Modifier.clickable {
-
+                        navController.navigate(Screen.FavoriteScreen.route){
+                            popUpTo(Screen.FavoriteScreen.route){ inclusive = true}
+                        }
                     }
                 )
 

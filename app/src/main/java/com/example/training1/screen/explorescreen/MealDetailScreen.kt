@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.training1.R
 import com.example.training1.model.viewmodel.MainViewModel
+import com.google.firebase.database.FirebaseDatabase
 
 @Composable
 fun MealDetailScreen(viewstate: MainViewModel.MealDetailState) {
@@ -44,6 +45,9 @@ fun MealDetailScreen(viewstate: MainViewModel.MealDetailState) {
     var count by remember { mutableStateOf(0) }
 
     val context = LocalContext.current
+
+    val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+    val reference = database.getReference("meal")
 
     Scaffold(
 
