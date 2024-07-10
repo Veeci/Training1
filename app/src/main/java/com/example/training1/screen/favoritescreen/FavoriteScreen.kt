@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -32,69 +34,78 @@ import com.example.training1.model.viewmodel.DataViewModel
 @Composable
 fun FavoriteScreen() {
     val dataModel: DataViewModel = viewModel()
+    val hasFavorites by dataModel.hasFavorites.observeAsState(initial = false)
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Favorite",
-            color = colorResource(id = R.color.mainTheme),
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
+    if(hasFavorites)
+    {
+        Column(
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(81.dp)
-                .padding(top = 20.dp, start = 10.dp)
-                .align(Alignment.CenterHorizontally),
-            horizontalArrangement = Arrangement.Absolute.Left
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.img_sampleproduct),
-                contentDescription = "Item",
+            Text(
+                text = "Favorite",
+                color = colorResource(id = R.color.mainTheme),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier
-                    .width(56.dp)
-                    .height(61.dp)
+                    .align(Alignment.CenterHorizontally)
             )
 
-            Column(
+            Row(
                 modifier = Modifier
-                    .padding(start = 20.dp)
+                    .fillMaxWidth()
+                    .height(81.dp)
+                    .padding(top = 20.dp, start = 10.dp)
+                    .align(Alignment.CenterHorizontally),
+                horizontalArrangement = Arrangement.Absolute.Left
             ) {
-                Text(
-                    text = "Apple",
-                    color = colorResource(id = R.color.featuredMealName),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(top = 5.dp)
+                Image(
+                    painter = painterResource(id = R.drawable.img_sampleproduct),
+                    contentDescription = "Item",
+                    modifier = Modifier
+                        .width(56.dp)
+                        .height(61.dp)
                 )
 
-                Spacer(modifier = Modifier.height(15.dp))
-
-                Row(
-
-                ){
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_cart_selection),
-                        contentDescription = "Add to cart",
-                        modifier = Modifier
-                            .size(21.dp)
-                    )
-
+                Column(
+                    modifier = Modifier
+                        .padding(start = 20.dp)
+                ) {
                     Text(
-                        text = "Add to Cart",
-                        color = colorResource(id = R.color.mainTheme)
+                        text = "Apple",
+                        color = colorResource(id = R.color.featuredMealName),
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 5.dp)
                     )
+
+                    Spacer(modifier = Modifier.height(15.dp))
+
+                    Row(
+
+                    ){
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_cart_selection),
+                            contentDescription = "Add to cart",
+                            modifier = Modifier
+                                .size(21.dp)
+                        )
+
+                        Text(
+                            text = "Add to Cart",
+                            color = colorResource(id = R.color.mainTheme)
+                        )
+                    }
                 }
             }
         }
     }
+    else
+    {
+        EmptyFavoriteScreen()
+    }
+
 }
 
 @Composable

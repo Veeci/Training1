@@ -42,7 +42,7 @@ import com.example.training1.model.viewmodel.MainViewModel
 @Composable
 fun MealDetailScreen(viewstate: MainViewModel.MealDetailState) {
 
-    var count by remember { mutableIntStateOf(0) }
+    var amount by remember { mutableIntStateOf(0) }
 
     val context = LocalContext.current
 
@@ -154,15 +154,15 @@ fun MealDetailScreen(viewstate: MainViewModel.MealDetailState) {
                                         contentDescription = null,
                                         modifier = Modifier
                                             .clickable {
-                                                if(count > 0)
+                                                if(amount > 0)
                                                 {
-                                                    count--
+                                                    amount--
                                                 }
                                             }
                                     )
 
                                     Text(
-                                        text = count.toString(),
+                                        text = amount.toString(),
                                         fontSize = 20.sp,
                                         color = colorResource(id = R.color.featuredMealName)
                                     )
@@ -172,7 +172,7 @@ fun MealDetailScreen(viewstate: MainViewModel.MealDetailState) {
                                         contentDescription = null,
                                         modifier = Modifier
                                             .clickable {
-                                                count++
+                                                amount++
                                             }
                                     )
                                 }
@@ -202,7 +202,8 @@ fun MealDetailScreen(viewstate: MainViewModel.MealDetailState) {
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .clickable {
-
+                                        Toast.makeText(context, "Added to cart successfully", Toast.LENGTH_SHORT).show()
+                                        dataModel.addToCart(viewstate.meal, amount)
                                     }
                             )
 
