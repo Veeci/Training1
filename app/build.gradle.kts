@@ -69,6 +69,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.firebase.database)
     implementation (libs.google.firebase.auth.ktx)
+    implementation(platform(libs.firebase.bom))
+    implementation (libs.firebase.firestore.ktx)
     implementation(libs.firebase.common.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

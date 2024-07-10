@@ -13,13 +13,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -31,23 +31,22 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.training1.R
+import com.example.training1.model.viewmodel.DataViewModel
 import com.example.training1.model.viewmodel.MainViewModel
-import com.google.firebase.database.FirebaseDatabase
 
 @Composable
 fun MealDetailScreen(viewstate: MainViewModel.MealDetailState) {
 
-    var count by remember { mutableStateOf(0) }
+    var count by remember { mutableIntStateOf(0) }
 
     val context = LocalContext.current
 
-    val database: FirebaseDatabase = FirebaseDatabase.getInstance()
-    val reference = database.getReference("meal")
+    val dataModel: DataViewModel = viewModel()
 
     Scaffold(
 
@@ -61,7 +60,9 @@ fun MealDetailScreen(viewstate: MainViewModel.MealDetailState) {
                     painter = rememberAsyncImagePainter(R.drawable.detail_background),
                     contentDescription = "Background",
                     modifier = Modifier
-                        .fillMaxSize()
+                        .width(207.89.dp)
+                        .height(246.05.dp)
+                        .align(Alignment.TopEnd)
                 )
 
 
@@ -84,7 +85,7 @@ fun MealDetailScreen(viewstate: MainViewModel.MealDetailState) {
                                 .fillMaxWidth()
                                 .height(200.dp)
                                 .padding(top = 10.dp)
-                                .clip(CircleShape)
+                                .clip(RoundedCornerShape(12.dp))
                         )
 
                         Text(
@@ -94,7 +95,7 @@ fun MealDetailScreen(viewstate: MainViewModel.MealDetailState) {
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Start,
                             modifier = Modifier
-                                .fillMaxWidth()
+                                .fillMaxSize()
                                 .padding(top = 10.dp)
                         )
 
@@ -185,6 +186,7 @@ fun MealDetailScreen(viewstate: MainViewModel.MealDetailState) {
                                     .padding(start = 20.dp)
                                     .clickable {
                                         Toast.makeText(context, "Added to favorite successfully", Toast.LENGTH_SHORT).show()
+                                        dataModel.addToFavorite(viewstate.meal)
                                     }
                             )
                         }
@@ -217,10 +219,4 @@ fun MealDetailScreen(viewstate: MainViewModel.MealDetailState) {
             }
         }
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun Test() {
-
 }
