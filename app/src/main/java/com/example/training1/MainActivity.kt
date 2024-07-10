@@ -36,7 +36,7 @@ import com.example.training1.screen.explorescreen.MealListScreen
 import com.example.training1.screen.Screen
 import com.example.training1.screen.accountscreen.AccountSettingScreen
 import com.example.training1.screen.favoritescreen.EmptyFavoriteScreen
-import com.example.training1.screen.favoritescreen.FavoriteScreen
+import com.example.training1.screen.homescreen.MealByCategoryScreen
 import com.example.training1.ui.theme.Training1Theme
 
 class MainActivity : ComponentActivity() {
@@ -47,9 +47,10 @@ class MainActivity : ComponentActivity() {
             val recipeViewModel: MainViewModel = viewModel()
             val vmSignUp: SignUpViewModel = viewModel()
 
-            val viewstate by recipeViewModel.categoriesState
-            val viewstate2 by recipeViewModel.mealState
-            val viewstate3 by recipeViewModel.mealDetailState
+            val viewCategories by recipeViewModel.categoriesState
+            val viewMealsByCategory by recipeViewModel.byCategoryState
+            val viewFeaturedMeal by recipeViewModel.featuredState
+            val viewMealDetail by recipeViewModel.mealDetailState
 
             val navController = rememberNavController()
             Training1Theme {
@@ -57,24 +58,39 @@ class MainActivity : ComponentActivity() {
                     content = { contentPadding ->
                         NavHost(navController = navController, startDestination = Screen.HomeScreen.route, modifier = Modifier.padding(contentPadding)){
                             composable(route = Screen.HomeScreen.route){
-                                HomeScreen(navigateToCategory = {
+                                HomeScreen(
+                                    navigateToCategory = {
                                     navController.navigate(Screen.CategoryScreen.route)
-                                },
+                                    },
                                     navigateToMealDetail = { mealId ->
                                         recipeViewModel.fetchMealDetail(mealId)
                                         navController.navigate(Screen.MealDetailScreen.route) {
                                             popUpTo(Screen.MealListScreen.route) { inclusive = true }
                                         }
+                                    },
+                                    navigateToMealByCategory = { strCategory ->
+                                        navController.navigate("${Screen.MealByCategoryScreen.route}/$strCategory")
                                     }
                                 )
                             }
 
                             composable(route = Screen.CategoryScreen.route){
-                                CategoryScreen(viewstate)
+                                CategoryScreen(viewCategories)
+                            }
+
+                            composable(route = "${Screen.MealByCategoryScreen.route}/{category}") { backStackEntry ->
+                                val category = backStackEntry.arguments?.getString("category") ?: ""
+                                MealByCategoryScreen(
+                                    category = category,
+                                    navigateToMealDetail = { mealId ->
+                                        recipeViewModel.fetchMealDetail(mealId)
+                                        navController.navigate(Screen.MealDetailScreen.route)
+                                    }
+                                )
                             }
 
                             composable(route = Screen.MealListScreen.route) {
-                                MealListScreen(viewstate2, navigateToMealDetail = { mealId ->
+                                MealListScreen(viewFeaturedMeal, navigateToMealDetail = { mealId ->
                                     recipeViewModel.fetchMealDetail(mealId)
                                     navController.navigate(Screen.MealDetailScreen.route) {
                                         popUpTo(Screen.MealListScreen.route) { inclusive = true }
@@ -83,7 +99,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable(route = Screen.MealDetailScreen.route){
-                                MealDetailScreen(viewstate3)
+                                MealDetailScreen(viewMealDetail)
                             }
 
                             composable(route = Screen.AccountScreen.route){

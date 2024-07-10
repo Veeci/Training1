@@ -36,7 +36,7 @@ import com.example.training1.model.viewmodel.MainViewModel
 import com.example.training1.model.appmodel.Meal
 
 @Composable
-fun MealListScreen(viewstate: MainViewModel.MealListState, navigateToMealDetail: (String) -> Unit) {
+fun MealListScreen(viewstate: MainViewModel.FeaturedListState, navigateToMealDetail: (String) -> Unit) {
     Scaffold(
         content = { paddingValues ->
             Column(

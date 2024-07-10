@@ -61,14 +61,18 @@ class AuthActivity : ComponentActivity() {
                             }
 
                             composable(route = Screen.HomeScreen.route){
-                                HomeScreen(navigateToCategory = {
+                                HomeScreen(
+                                    navigateToCategory = {
                                     navController.navigate(Screen.CategoryScreen.route)
-                                },
+                                    },
                                     navigateToMealDetail = { mealId ->
                                         recipeViewModel.fetchMealDetail(mealId)
                                         navController.navigate(Screen.MealDetailScreen.route) {
                                             popUpTo(Screen.MealListScreen.route) { inclusive = true }
                                         }
+                                    },
+                                    navigateToMealByCategory = { strCategory ->
+                                        navController.navigate("${Screen.MealByCategoryScreen.route}/$strCategory")
                                     }
                                 )
                             }

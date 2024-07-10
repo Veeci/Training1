@@ -1,7 +1,9 @@
 package com.example.training1.screen.homescreen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -10,14 +12,19 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -35,19 +42,21 @@ import com.example.training1.model.appmodel.Meal
 @Composable
 fun HomeScreen(
     navigateToCategory: () -> Unit,
-    navigateToMealDetail: (String) -> Unit
+    navigateToMealDetail: (String) -> Unit,
+    navigateToMealByCategory: (String) -> Unit
 ) {
     val receiptViewModel: MainViewModel = viewModel()
-    val viewstate by receiptViewModel.categoriesState
-    val viewstate2 by receiptViewModel.mealState2
+    val viewCategories by receiptViewModel.categoriesState
+    val viewFeatured by receiptViewModel.featuredState
 
     val primaryColor = colorResource(id = R.color.mainTheme)
+
+    val mealToSearch by remember { mutableStateOf("") }
 
     Scaffold(
         content = { paddingValues->
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
                     .padding(paddingValues)
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState()),
@@ -70,13 +79,44 @@ fun HomeScreen(
                     onValueChange = { /*TODO*/ },
                     placeholder = { Text("Search") },
                     leadingIcon = {
-                        Icon(imageVector = Icons.Filled.Search, contentDescription = "")
+                        IconButton(onClick = { }) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = null,
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
+                    },
+                    trailingIcon = {
+                        IconButton(onClick = {} ) {
+                            if (mealToSearch.isNotBlank()){
+                                Icon(
+                                    imageVector = Icons.Default.Clear,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(22.dp)
+                                )
+                            }else {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(22.dp)
+                                )
+                            }
+                        }
                     },
                     shape = TextFieldDefaults.shape,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
                         .background(Color.White)
+                        .clip(RoundedCornerShape(12.dp))
+                        .border(
+                            BorderStroke(
+                                0.1.dp,
+                                SolidColor(MaterialTheme.colorScheme.onSurface)
+                            ),
+                            RoundedCornerShape(12.dp)
+                        ),
                 )
 
                 // Categories heading
@@ -103,9 +143,14 @@ fun HomeScreen(
                     )
                 }
 
-                CategoryScrollview(categories = viewstate.list)
-
-                // Popular deals heading
+                CategoryScrollview(
+                    categories = viewCategories.list,
+                    onMealClicked = { strCategory ->
+                        navigateToMealByCategory(strCategory)
+                    }
+                )
+                
+                // Featured heading
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -125,12 +170,11 @@ fun HomeScreen(
                 }
 
                 FeaturedMealScrollview(
-                    meals = viewstate2.list,
+                    meals = viewFeatured.list,
                     onMealClicked = { mealId ->
                         navigateToMealDetail(mealId)
                     }
                 )
-
             }
         },
         bottomBar = {
@@ -140,18 +184,20 @@ fun HomeScreen(
 
 //Display the whole category list
 @Composable
-fun CategoryScrollview(categories: List<Category>)
+fun CategoryScrollview(categories: List<Category>, onMealClicked: (String) -> Unit)
 {
     LazyRow {
         items(categories.size) { index ->
-            ScrollviewCategoryItem(category = categories[index])
+            ScrollviewCategoryItem(category = categories[index]){
+                onMealClicked(categories[index].strCategory)
+            }
         }
     }
 }
 
 //Display a single category
 @Composable
-fun ScrollviewCategoryItem(category: Category)
+fun ScrollviewCategoryItem(category: Category, onMealClicked: (String) -> Unit)
 {
     Column(modifier = Modifier
         .padding(8.dp)
@@ -163,7 +209,10 @@ fun ScrollviewCategoryItem(category: Category)
             contentDescription = "Category Image",
             modifier = Modifier
                 .size(120.dp)
-                .clip(CircleShape),
+                .clip(CircleShape)
+                .clickable {
+                    onMealClicked(category.strCategory)
+                },
             contentScale = ContentScale.Crop
         )
 
@@ -193,7 +242,7 @@ fun FeaturedMealScrollview(
 
 //Display a single featured meal
 @Composable
-fun ScrollViewFeaturedMealItem(meal: Meal, onMealClicked: (String) -> Unit )
+fun ScrollViewFeaturedMealItem(meal: Meal, onMealClicked: (String) -> Unit)
 {
     val mealNameColor = colorResource(id = R.color.featuredMealName)
 
@@ -207,7 +256,7 @@ fun ScrollViewFeaturedMealItem(meal: Meal, onMealClicked: (String) -> Unit )
             contentDescription = null,
             modifier = Modifier
                 .size(150.dp)
-                .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
+                .clip(CircleShape)
                 .clickable {
                     onMealClicked(meal.idMeal)
                 },
@@ -223,16 +272,17 @@ fun ScrollViewFeaturedMealItem(meal: Meal, onMealClicked: (String) -> Unit )
             Text(
                 text = meal.strMeal,
                 color = mealNameColor,
-                fontSize = 14.sp,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier
-                   .weight(1f)
+                    .weight(1f)
             )
 
             Image(
                 painterResource(id = R.drawable.ic_add_btn),
                 contentDescription = "Add",
                 modifier = Modifier
-                    .size(24.dp)
+                    .size(29.56.dp)
                     .clickable {
 
                     }

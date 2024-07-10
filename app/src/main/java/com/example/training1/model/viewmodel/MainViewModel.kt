@@ -13,8 +13,11 @@ class MainViewModel : ViewModel() {
 
     init {
         fetchCategories()
+        //fetchIngredients()
         fetchFeaturedList()
     }
+
+
 
     //List of categories--------------------------------------------------------------------------
     data class RecipeState(
@@ -45,9 +48,38 @@ class MainViewModel : ViewModel() {
     }
     //--------------------------------------------------------------------------------------------
 
-    //List of ingredients-------------------------------------------------------------------------
 
-    //--------------------------------------------------------------------------------------------
+
+    //List of meals by category--------------------------------------------------------------------
+    data class ByCategoryState(
+        val loading: Boolean = true,
+        val list: List<Meal> = emptyList(),
+        val error: String? = null
+    )
+
+    private val _byCategoryList = mutableStateOf(ByCategoryState())
+    val byCategoryState: State<ByCategoryState> = _byCategoryList
+
+    fun fetchMealsByCategory(category: String) {
+        viewModelScope.launch {
+            try {
+                val response = apiService.mealByCategories(category)
+                _byCategoryList.value = _byCategoryList.value.copy(
+                    loading = false,
+                    list = response.meal,
+                    error = null
+                )
+            } catch (e: Exception) {
+                _byCategoryList.value = _byCategoryList.value.copy(
+                    loading = false,
+                    error = "Error fetching meals by category: ${e.message}"
+                )
+            }
+        }
+    }
+    //---------------------------------------------------------------------------------------------
+
+
 
     //List of featured meals----------------------------------------------------------------------
     data class FeaturedListState(
@@ -78,6 +110,8 @@ class MainViewModel : ViewModel() {
     }
     //---------------------------------------------------------------------------------------------
 
+
+
     //Detail of a single meal----------------------------------------------------------------------
     data class MealDetailState(
         val loading: Boolean = true,
@@ -106,11 +140,4 @@ class MainViewModel : ViewModel() {
         }
     }
     //---------------------------------------------------------------------------------------------
-
-
-    data class MealListState(
-        val loading: Boolean = true,
-        val list: List<Meal> = emptyList(),
-        val error: String? = null
-    )
 }
