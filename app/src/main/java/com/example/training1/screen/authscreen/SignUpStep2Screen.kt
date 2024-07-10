@@ -1,5 +1,6 @@
 package com.example.training1.screen.authscreen
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -47,6 +48,7 @@ fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) 
     val context = LocalContext.current
 
     var textPassword by remember { mutableStateOf("") }
+    var textConfirmPassword by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -96,8 +98,8 @@ fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) 
             Spacer(modifier = Modifier.height(60.dp))
 
             OutlinedTextField(
-                value = viewModel.password,
-                onValueChange = { viewModel.password = it },
+                value = textPassword,
+                onValueChange = { textPassword = it },
                 label = { Text("Password") },
                 placeholder = {
                     Text(
@@ -123,8 +125,8 @@ fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) 
             Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedTextField(
-                value = textPassword,
-                onValueChange = { textPassword = it },
+                value = textConfirmPassword,
+                onValueChange = { textConfirmPassword = it },
                 label = { Text("Confirm Password") },
                 placeholder = {
                     Text(
@@ -160,12 +162,19 @@ fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) 
                         .width(343.dp)
                         .height(50.dp)
                         .clickable {
-                            viewModel.signUp(viewModel.email, textPassword, context)
-                            if(viewModel.checkValid)
+                            if(checkValidPassword(textPassword) && checkConfirmPassword(textPassword, textConfirmPassword))
                             {
-                                navController.navigate(Screen.SignInScreen.route){
-                                    popUpTo(Screen.SignInScreen.route) { inclusive = true }
+                                viewModel.signUp(viewModel.email, textPassword, context)
+                                if(viewModel.checkValid)
+                                {
+                                    navController.navigate(Screen.SignInScreen.route){
+                                        popUpTo(Screen.SignInScreen.route) { inclusive = true }
+                                    }
                                 }
+                            }
+                            else
+                            {
+                                Toast.makeText(context, "Password length must between 8 characters and must contain at least one uppercase letter, one lowercase letter, one number, and one special character", Toast.LENGTH_LONG).show()
                             }
                         }
                 )
@@ -181,4 +190,28 @@ fun SignUpStep2Screen(navController: NavController, viewModel: SignUpViewModel) 
             }
         }
     }
+}
+
+fun checkValidPassword(password: String): Boolean {
+    if (password.length < 8) return false
+
+    var hasUppercase = false
+    var hasLowercase = false
+    var hasNumber = false
+    var hasSpecialChar = false
+
+    for (char in password) {
+        when {
+            char.isUpperCase() -> hasUppercase = true
+            char.isLowerCase() -> hasLowercase = true
+            char.isDigit() -> hasNumber = true
+            else -> hasSpecialChar = true // Consider any non-alphanumeric as special
+        }
+    }
+
+    return hasUppercase && hasLowercase && hasNumber && hasSpecialChar
+}
+
+fun checkConfirmPassword(password: String, confirmPassword: String): Boolean {
+    return password == confirmPassword
 }

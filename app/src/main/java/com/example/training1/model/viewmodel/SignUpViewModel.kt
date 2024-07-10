@@ -3,6 +3,7 @@ package com.example.training1.model.viewmodel
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,6 +13,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.training1.AuthActivity
 import com.example.training1.MainActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -53,6 +55,16 @@ class SignUpViewModel: ViewModel() {
         }
     }
 
+    private fun sendVerificationEmail(user: FirebaseUser) {
+        user.sendEmailVerification().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Log.d("SignUpViewModel", "Verification email sent")
+            } else {
+                Log.d("SignUpViewModel", "Failed to send verification email")
+                errorMessage = task.exception?.message
+            }
+        }
+    }
 
     var checkValid: Boolean = false
     fun signUp(email: String, password: String, context: Context) {
@@ -60,9 +72,10 @@ class SignUpViewModel: ViewModel() {
             try {
                 val trimmedEmail = email.trim()
                 val result = auth.createUserWithEmailAndPassword(trimmedEmail, password).await()
-                checkValid = result.user != null
+                checkValid = (result.user != null)
                 if (checkValid) {
-                    Toast.makeText(context, "Sign up successfully! You can now go to Log in.", Toast.LENGTH_LONG).show()
+                    sendVerificationEmail(result.user!!)
+                    Toast.makeText(context, "Go to your email to verify then you can log in with your account! Enjoy the app!", Toast.LENGTH_LONG).show()
                 } else {
                     Toast.makeText(context, "Sign up failed!!!", Toast.LENGTH_LONG).show()
                 }
@@ -73,14 +86,21 @@ class SignUpViewModel: ViewModel() {
     }
 
     var checkUser: Boolean = false
-    fun signIn(email: String, password: String, context: Context) {
+    fun signIn(email: String, password: String, context: Context, intent: Intent) {
         viewModelScope.launch {
             try {
                 val trimmedEmail = email.trim()
                 val result = auth.signInWithEmailAndPassword(trimmedEmail, password).await()
                 checkUser = result.user != null
                 if (checkUser) {
-                    Toast.makeText(context, "Sign in successfully!", Toast.LENGTH_SHORT).show()
+                    if (result.user!!.isEmailVerified) {
+                        Toast.makeText(context, "Sign in successfully!", Toast.LENGTH_SHORT).show()
+                        intent.let {
+                            context.startActivity(intent)
+                        }
+                    } else {
+                        Toast.makeText(context, "Please verify your email first.", Toast.LENGTH_LONG).show()
+                    }
                 } else {
                     Toast.makeText(context, "Sign in failed!!!", Toast.LENGTH_SHORT).show()
                 }
@@ -89,10 +109,6 @@ class SignUpViewModel: ViewModel() {
                 Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
-    }
-
-    fun checkPassword(password: String, checkPassword: String): Boolean {
-        return password == checkPassword
     }
 
     fun logOut(context: Context)
@@ -105,9 +121,7 @@ class SignUpViewModel: ViewModel() {
 
     fun handleAuthActivityStart(context: Context) {
         val user = auth.currentUser
-        if (checkRememberPassword && user == null) {
-            signIn(email, password, context)
-        } else if (user != null) {
+        if (user != null) {
             val intent = Intent(context, MainActivity::class.java)
             context.startActivity(intent)
             if (context is AuthActivity) {
@@ -115,6 +129,4 @@ class SignUpViewModel: ViewModel() {
             }
         }
     }
-
-    var directToLogin: Boolean = false
 }

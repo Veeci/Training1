@@ -11,13 +11,16 @@ data class Meal(
     @SerializedName("strCategory") val strCategory: String,
     @SerializedName("strArea") val strArea: String,
     @SerializedName("strInstructions") val strInstructions: String,
-    @SerializedName("strMealThumb") val strMealThumb: String
+    @SerializedName("strMealThumb") val strMealThumb: String,
+    val strPrice: Double
 ): Parcelable
 
+//To display meals in the search api link
 data class MealResponse(
     @SerializedName("meals") val meal: List<Meal>
 )
 
+//To display meals in the lookup api link
 data class MealDetailResponse(
     @SerializedName("meals") val meal: List<Meal>
 )

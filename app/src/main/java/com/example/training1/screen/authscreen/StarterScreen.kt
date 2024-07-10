@@ -86,7 +86,6 @@ fun StarterScreen(navController: NavController, viewModel: SignUpViewModel) {
                 .height(50.dp)
                 .align(Alignment.CenterHorizontally)
                 .clickable {
-                    viewModel.directToLogin = true
                     navController.navigate(Screen.SignInScreen.route)
                     {
                         popUpTo(Screen.SignInScreen.route) { inclusive = true }

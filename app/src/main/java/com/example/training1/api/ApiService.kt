@@ -1,4 +1,4 @@
-package com.example.training1.api
+ package com.example.training1.api
 
 import com.example.training1.model.appmodel.CategoriesResponse
 import com.example.training1.model.appmodel.MealDetailResponse

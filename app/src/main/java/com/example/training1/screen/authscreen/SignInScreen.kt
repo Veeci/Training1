@@ -1,7 +1,6 @@
 package com.example.training1.screen.authscreen
 
 import android.content.Intent
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -188,25 +187,7 @@ fun SignInScreen(navController: NavController, viewModel: SignUpViewModel) {
                         .width(343.dp)
                         .height(50.dp)
                         .clickable {
-                            if(viewModel.directToLogin)
-                            {
-                                context.startActivity(intent)
-                            }
-                            else
-                            {
-                                if(viewModel.checkPassword(viewModel.password, textPassword))
-                                {
-                                    viewModel.signIn(textEmail, textPassword, context)
-                                    if(viewModel.checkUser)
-                                    {
-                                        context.startActivity(intent)
-                                    }
-                                }
-                                else
-                                {
-                                    Toast.makeText(context, "Confirm password does not match!", Toast.LENGTH_SHORT).show()
-                                }
-                            }
+                            viewModel.signIn(textEmail, textPassword, context, intent)
                         }
                 )
 
