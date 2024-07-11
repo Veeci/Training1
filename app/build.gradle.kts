@@ -52,7 +52,8 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.androidx.core.ktx.v1131)
+    implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.coil)
     implementation(libs.material3)
     implementation(libs.androidx.navigation.compose)
@@ -74,6 +75,7 @@ dependencies {
     implementation (libs.firebase.firestore.ktx)
     implementation(libs.firebase.common.ktx)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

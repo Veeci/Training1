@@ -1,5 +1,7 @@
 package com.example.training1.screen.explorescreen
 
+import Notification
+import NotificationViewModel
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -38,6 +40,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.training1.R
 import com.example.training1.model.viewmodel.DataViewModel
 import com.example.training1.model.viewmodel.MainViewModel
+import createNotificationChannel
+import sendNotification
 
 @Composable
 fun MealDetailScreen(viewstate: MainViewModel.MealDetailState) {
@@ -47,6 +51,10 @@ fun MealDetailScreen(viewstate: MainViewModel.MealDetailState) {
     val context = LocalContext.current
 
     val dataModel: DataViewModel = viewModel()
+
+    val notificationViewModel: NotificationViewModel = viewModel()
+
+    createNotificationChannel(context)
 
     Scaffold(
 
@@ -187,6 +195,18 @@ fun MealDetailScreen(viewstate: MainViewModel.MealDetailState) {
                                     .clickable {
                                         Toast.makeText(context, "Added to favorite successfully", Toast.LENGTH_SHORT).show()
                                         dataModel.addToFavorite(viewstate.meal)
+                                        sendNotification(
+                                            context = context,
+                                            title = "New Favorite",
+                                            content = "Added ${viewstate.meal.strMeal} to your favorites"
+                                        )
+                                        notificationViewModel.addNotification(
+                                            Notification(
+                                                title = "New Favorite",
+                                                content = "Added ${viewstate.meal.strMeal} to your favorites",
+                                                timestamp = System.currentTimeMillis()
+                                            )
+                                        )
                                     }
                             )
                         }

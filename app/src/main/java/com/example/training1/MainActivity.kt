@@ -1,5 +1,6 @@
 package com.example.training1
 
+import NotificationViewModel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -37,6 +38,7 @@ import com.example.training1.screen.Screen
 import com.example.training1.screen.accountscreen.AccountSettingScreen
 import com.example.training1.screen.favoritescreen.FavoriteScreen
 import com.example.training1.screen.homescreen.MealByCategoryScreen
+import com.example.training1.screen.notification.NotificationScreen
 import com.example.training1.ui.theme.Training1Theme
 
 class MainActivity : ComponentActivity() {
@@ -46,6 +48,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val recipeViewModel: MainViewModel = viewModel()
             val vmSignUp: SignUpViewModel = viewModel()
+            val notiViewModel : NotificationViewModel = viewModel()
 
             val viewCategories by recipeViewModel.categoriesState
             val viewFeaturedMeal by recipeViewModel.featuredState
@@ -112,6 +115,10 @@ class MainActivity : ComponentActivity() {
                             composable(route = Screen.FavoriteScreen.route){
                                 FavoriteScreen()
                             }
+
+                            composable(route = Screen.NotificationScreen.route){
+                                NotificationScreen(notiViewModel)
+                            }
                         }
                     },
                     bottomBar = {
@@ -175,7 +182,9 @@ class MainActivity : ComponentActivity() {
                     painterResource(id = R.drawable.ic_notification_subsec),
                     contentDescription = "",
                     modifier = Modifier.clickable {
-
+                        navController.navigate(Screen.NotificationScreen.route){
+                            popUpTo(Screen.NotificationScreen.route){inclusive = true}
+                        }
                     }
                 )
 
