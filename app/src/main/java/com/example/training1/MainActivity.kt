@@ -48,7 +48,6 @@ class MainActivity : ComponentActivity() {
             val vmSignUp: SignUpViewModel = viewModel()
 
             val viewCategories by recipeViewModel.categoriesState
-            val viewMealsByCategory by recipeViewModel.byCategoryState
             val viewFeaturedMeal by recipeViewModel.featuredState
             val viewMealDetail by recipeViewModel.mealDetailState
 
@@ -173,7 +172,7 @@ class MainActivity : ComponentActivity() {
 
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Image(
-                    painterResource(id = R.drawable.ic_cart_btn),
+                    painterResource(id = R.drawable.ic_notification_subsec),
                     contentDescription = "",
                     modifier = Modifier.clickable {
 
@@ -181,7 +180,7 @@ class MainActivity : ComponentActivity() {
                 )
 
                 Text(
-                    text = "Cart",
+                    text = "Notification",
                     fontSize = 10.sp,
                     color = textColor
                 )

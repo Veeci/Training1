@@ -115,7 +115,7 @@ class MainViewModel : ViewModel() {
     //Detail of a single meal----------------------------------------------------------------------
     data class MealDetailState(
         val loading: Boolean = true,
-        val meal: Meal = Meal("", "", "", "", "", "", 0.0),
+        val meal: Meal = Meal("", "", "", "", "", "", 50.0),
         val error: String? = null
     )
 

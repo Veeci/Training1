@@ -111,13 +111,17 @@ class SignUpViewModel: ViewModel() {
         }
     }
 
-    fun logOut(context: Context)
-    {
+    fun logOut(context: Context) {
         auth.signOut()
-        Toast.makeText(context, "Log out successfully!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Logged out successfully!", Toast.LENGTH_SHORT).show()
         val intent = Intent(context, AuthActivity::class.java)
         context.startActivity(intent)
+        if (context is MainActivity) {
+            context.finish()
+        }
+        preferences.edit().clear().apply()
     }
+
 
     fun handleAuthActivityStart(context: Context) {
         val user = auth.currentUser
